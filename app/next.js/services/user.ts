@@ -1,7 +1,8 @@
-import { BatchGetItemCommand, BatchGetItemCommandInput, BatchWriteItemCommand, BatchWriteItemCommandInput, WriteRequest } from '@aws-sdk/client-dynamodb'
+import { BatchGetItemCommand, BatchGetItemCommandInput, BatchWriteItemCommand, BatchWriteItemCommandInput, ScanCommand, ScanCommandInput, WriteRequest } from '@aws-sdk/client-dynamodb'
 import { ddbClient } from './dynamodb'
+import { v4 as uuidv4 } from 'uuid'
 
-const TABLE_NAME = 'Users'
+const TABLE_NAME = 'User'
 
 interface User {
   id: string;
@@ -18,6 +19,7 @@ class UserService {
       return {
         PutRequest: {
           Item: {
+            Id: { S: uuidv4() },
             Name: { S: item.name }
           }
         }
@@ -33,15 +35,40 @@ class UserService {
     const command = new BatchWriteItemCommand(input)
 
     try {
-      const response = await ddbClient.send(command)
-      console.log(response)
+      await ddbClient.send(command)
     } catch (error) {
       console.error(error)
     }
   }
 
   public async findAll(): Promise<User[]> {
-    return []
+    /**
+     * @TODO: Implement pagination
+     * https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/clients/client-dynamodb/classes/scancommand.html
+     * https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_Scan.html
+     */
+
+    const input: ScanCommandInput = {
+      TableName: TABLE_NAME,
+      AttributesToGet: [
+        'Id', 'Name'
+      ]
+    }
+
+    const command = new ScanCommand(input)
+
+    try {
+      const response = await ddbClient.send(command)
+      return response.Items!.map(user => {
+        return {
+          id: user.Id.S!,
+          name: user.Name.S!,
+        }
+      })
+    } catch (error) {
+      console.error(error)
+      return []
+    }
   }
 
   public async findById(ids: User['id'][]): Promise<User[]> {

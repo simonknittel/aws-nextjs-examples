@@ -3,6 +3,7 @@
     "ms-azuretools.vscode-docker",
     "mikestead.dotenv",
     "dbaeumer.vscode-eslint",
-    "hangxingliu.vscode-nginx-conf-hint"
+    "hangxingliu.vscode-nginx-conf-hint",
+    "humao.rest-client"
   ]
 }
