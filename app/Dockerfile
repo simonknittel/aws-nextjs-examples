@@ -7,7 +7,6 @@
 
 FROM node:16.13.0-alpine3.14 AS builder
 
-ENV NEXT_TELEMETRY_DISABLED=1
 ARG AWS_ACCESS_KEY_ID
 ARG AWS_SECRET_ACCESS_KEY
 
@@ -15,7 +14,7 @@ WORKDIR /app
 COPY next.js .
 RUN apk add --no-cache libc6-compat && \
     npm ci && \
-    npm run build
+    NEXT_TELEMETRY_DISABLED=1 npm run build
 
 
 #
@@ -35,21 +34,22 @@ RUN tar -xf /tmp/oauth2-proxy-v$OAUTH2_PROXY_VERSION.linux-amd64.tar.gz -C /tmp 
     cp /tmp/oauth2-proxy-v$OAUTH2_PROXY_VERSION.linux-amd64/oauth2-proxy /usr/local/bin
 COPY oauth2-proxy.cfg /etc/oauth2-proxy.cfg
 
-ENV OAUTH2_CLIENT_ID=
-ENV OAUTH2_CLIENT_SECRET=
-ENV COOKIE_SECRET=
+# Environmental variables for oauth2-proxy
+ENV OAUTH2_PROXY_CLIENT_ID=
+ENV OAUTH2_PROXY_CLIENT_SECRET=
+ENV OAUTH2_PROXY_COOKIE_SECRET=
 
 
+# Move built Next.js from builder step to runner
 COPY --from=builder /app/next.config.js ./
 COPY --from=builder /app/public /app/public
 COPY --from=builder /app/.next /app/.next
 COPY --from=builder /app/node_modules /app/node_modules
 COPY --from=builder /app/package.json /app/package.json
 
-ENV NEXT_TELEMETRY_DISABLED=1
+# Environmental variables for Next.js
 ENV AWS_ACCESS_KEY_ID=
 ENV AWS_SECRET_ACCESS_KEY=
-ENV NODE_ENV=production
 
 
 EXPOSE 8080/tcp

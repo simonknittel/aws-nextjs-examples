@@ -3,17 +3,13 @@
 set -e
 
 # Start Next.js
-cd /app
-node_modules/.bin/next start &
+export NEXT_TELEMETRY_DISABLED=1
+export NODE_ENV=production
+cd /app && node_modules/.bin/next start &
 pid1=$!
 
 # Start oauth2-proxy
-/usr/local/bin/oauth2-proxy \
-  --config /etc/oauth2-proxy.cfg \
-  --client-id $OAUTH2_CLIENT_ID \
-  --client-secret $OAUTH2_CLIENT_SECRET \
-  --cookie-secret $COOKIE_SECRET \
-  $@ &
+/usr/local/bin/oauth2-proxy --config /etc/oauth2-proxy.cfg $@ &
 pid2=$!
 
 # Wait for any process to exit
