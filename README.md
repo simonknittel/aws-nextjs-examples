@@ -12,12 +12,11 @@ Minimal containerized web application with database and authentication hosted on
   * Database
 * [oauth-proxy](https://oauth2-proxy.github.io/oauth2-proxy/)
   * Authentication
-* [AWS Copilot CLI](https://aws.github.io/copilot-cli/)
 
 ## Prerequisites
 
 1. Install Docker
-2. Install AWS Copilot CLI and AWS CLI: `brew install aws/tap/copilot-cli awscli`
+2. Install AWS CLI: `brew install awscli`
 3. Configure AWS CLI: `aws configure`
 
 ## Initial AWS setup
@@ -32,11 +31,8 @@ Minimal containerized web application with database and authentication hosted on
 
 2. Create DynamoDB tables
 
-    ```txt
-    Table name: Users
-    Partition key: Id (String)
-    Customize settings
-    Capacity mode: On-demand
+    ```sh
+    aws dynamodb create-table --table-name Users --billing-mode PAY_PER_REQUEST --attribute-definitions AttributeName=Id,AttributeType=S --key-schema AttributeName=Id,KeyType=HASH
     ```
 
 3. Create IAM policy called `aws-service`
