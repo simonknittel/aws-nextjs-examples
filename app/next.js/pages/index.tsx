@@ -1,8 +1,10 @@
 import type { GetServerSideProps, InferGetServerSidePropsType, NextPage } from 'next'
+import { useRouter } from 'next/router';
 import Head from 'next/head'
 import Image from 'next/image'
 import { userService } from '../services/user'
 import styles from '../styles/Home.module.css'
+import { useEffect } from 'react';
 
 export const getServerSideProps: GetServerSideProps = async () => {
   const users = await userService.findById([ '5cf1a4d5-635c-4fdb-90d1-8b13d2d38f77' ])
@@ -15,6 +17,16 @@ export const getServerSideProps: GetServerSideProps = async () => {
 }
 
 const Home: NextPage = ({ users }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+  const router = useRouter()
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      router.replace(router.asPath)
+    }, 10000)
+
+    return () => clearInterval(interval)
+  }, [ router ])
+
   return (
     <div className={styles.container}>
       <Head>
