@@ -5,6 +5,9 @@ services:
   application:
     build:
       context: ./app
+      args:
+        AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
+        AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
     networks:
       - everything
     env_file: .env

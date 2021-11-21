@@ -10,8 +10,8 @@ pid1=$!
 # Start oauth2-proxy
 /usr/local/bin/oauth2-proxy \
   --config /etc/oauth2-proxy.cfg \
-  --client-id $CLIENT_ID \
-  --client-secret $CLIENT_SECRET \
+  --client-id $OAUTH2_CLIENT_ID \
+  --client-secret $OAUTH2_CLIENT_SECRET \
   --cookie-secret $COOKIE_SECRET \
   $@ &
 pid2=$!
