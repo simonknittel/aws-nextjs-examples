@@ -26,7 +26,7 @@ const Home: NextPage = ({ allUsers }: InferGetServerSidePropsType<typeof getServ
   useEffect(() => {
     const interval = setInterval(() => {
       refreshPage()
-    }, 10000)
+    }, 30000)
 
     return () => clearInterval(interval)
   }, [ refreshPage ])

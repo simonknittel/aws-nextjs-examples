@@ -18,6 +18,17 @@ RUN apk add --no-cache libc6-compat && \
 
 
 #
+# dependencies
+#
+
+FROM node:16.13.0-alpine3.14 AS dependencies
+
+WORKDIR /app
+COPY next.js/package.json next.js/package-lock.json ./
+RUN npm ci --only=production
+
+
+#
 # runner
 #
 
@@ -41,16 +52,18 @@ ENV OAUTH2_PROXY_COOKIE_SECRET=
 
 
 # Move built Next.js from builder step to runner
-COPY --from=builder /app/next.config.js ./
-COPY --from=builder /app/public /app/public
-COPY --from=builder /app/.next /app/.next
-COPY --from=builder /app/node_modules /app/node_modules
-COPY --from=builder /app/package.json /app/package.json
+COPY --chown=node:node --from=builder /app/next.config.js ./
+COPY --chown=node:node --from=builder /app/public /app/public
+COPY --chown=node:node --from=builder /app/.next /app/.next
+COPY --chown=node:node --from=dependencies /app/node_modules /app/node_modules
+COPY --chown=node:node --from=builder /app/package.json /app/package.json
 
 # Environmental variables for Next.js
 ENV AWS_ACCESS_KEY_ID=
 ENV AWS_SECRET_ACCESS_KEY=
 
+
+USER node
 
 EXPOSE 8080/tcp
 
