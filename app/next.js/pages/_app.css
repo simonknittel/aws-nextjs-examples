@@ -1,0 +1,9 @@
+/* No global CSS! */
+
+html {
+  overflow: scroll;
+}
+
+body {
+  margin: 0;
+}

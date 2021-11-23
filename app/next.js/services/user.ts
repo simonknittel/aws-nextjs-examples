@@ -7,6 +7,7 @@ const TABLE_NAME = 'User'
 interface User {
   id: string;
   name: string;
+  creationDate: number;
 }
 
 interface CreateItem {
@@ -20,7 +21,8 @@ class UserService {
         PutRequest: {
           Item: {
             Id: { S: uuidv4() },
-            Name: { S: item.name }
+            Name: { S: item.name },
+            CreationDate: { N: Date.now().toString() },
           }
         }
       }
@@ -51,7 +53,7 @@ class UserService {
     const input: ScanCommandInput = {
       TableName: TABLE_NAME,
       AttributesToGet: [
-        'Id', 'Name'
+        'Id', 'Name', 'CreationDate'
       ]
     }
 
@@ -63,6 +65,7 @@ class UserService {
         return {
           id: user.Id.S!,
           name: user.Name.S!,
+          creationDate: parseInt(user.CreationDate.N!),
         }
       })
     } catch (error) {
@@ -83,7 +86,7 @@ class UserService {
         [TABLE_NAME]: {
           Keys: keys,
           AttributesToGet: [
-            'Id', 'Name'
+            'Id', 'Name', 'CreationDate'
           ]
         }
       },
@@ -97,6 +100,7 @@ class UserService {
         return {
           id: user.Id.S!,
           name: user.Name.S!,
+          creationDate: parseInt(user.CreationDate.N!),
         }
       })
     } catch (error) {

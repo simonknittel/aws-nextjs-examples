@@ -1,4 +1,7 @@
-import { ReactEventHandler, useState } from "react"
+import { TextField } from '@mui/material'
+import LoadingButton from '@mui/lab/LoadingButton'
+import { ReactEventHandler, useState } from 'react'
+import { SendOutlined } from '@mui/icons-material'
 
 const CreateUserForm = ({ submitCallback }: { submitCallback: any }) => {
   const [ name, setName ] = useState('')
@@ -30,9 +33,8 @@ const CreateUserForm = ({ submitCallback }: { submitCallback: any }) => {
 
   return (
     <form onSubmit={ submit } onReset={ reset }>
-      <label htmlFor="name">Name</label>
-      <input id="name" name="name" type="text" required value={ name } onChange={ e => setName(e.target.value ) } />
-      <button type="submit" disabled={ requestInProgress }>Submit</button>
+      <TextField label="Name" name="name" type="text" required value={ name } onChange={ e => setName(e.target.value ) } variant="filled" />
+      <LoadingButton variant="contained" type="submit" loading={ requestInProgress } endIcon={<SendOutlined />}>Submit</LoadingButton>
     </form>
   )
 }
