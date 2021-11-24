@@ -24,8 +24,11 @@ RUN apk add --no-cache libc6-compat && \
 FROM node:16.13.0-alpine3.14 AS dependencies
 
 WORKDIR /app
+ADD https://gobinaries.com/tj/node-prune /usr/local/bin/
 COPY next.js/package.json next.js/package-lock.json ./
-RUN npm ci --only=production
+RUN npm ci --only=production && \
+    chmod +x /usr/local/bin/node-prune && \
+    node-prune
 
 
 #
