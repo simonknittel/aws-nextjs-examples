@@ -10,7 +10,7 @@ Minimal containerized web application with database and authentication hosted on
   * Application host
 * [Amazon DynamoDB](https://aws.amazon.com/de/dynamodb/)
   * Database
-* [oauth-proxy](https://oauth2-proxy.github.io/oauth2-proxy/)
+* [oauth2-proxy](https://oauth2-proxy.github.io/oauth2-proxy/)
   * Authentication
 
 ## Prerequisites
@@ -134,3 +134,11 @@ Minimal containerized web application with database and authentication hosted on
     ```
 
 4. Now access your local application via <https://localhost:8443>
+
+## Other links
+
+* DynamoDB
+  * https://eu-central-1.console.aws.amazon.com/dynamodbv2/home?region=eu-central-1#tables
+  * https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/clients/client-dynamodb/index.html
+  * https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_Operations_Amazon_DynamoDB.html
+  * https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_Types_Amazon_DynamoDB.html
