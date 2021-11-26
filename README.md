@@ -138,7 +138,11 @@ Minimal containerized web application with database and authentication hosted on
 ## Other links
 
 * DynamoDB
-  * https://eu-central-1.console.aws.amazon.com/dynamodbv2/home?region=eu-central-1#tables
-  * https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/clients/client-dynamodb/index.html
-  * https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_Operations_Amazon_DynamoDB.html
-  * https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_Types_Amazon_DynamoDB.html
+  * <https://eu-central-1.console.aws.amazon.com/dynamodbv2/home?region=eu-central-1#tables>
+  * <https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/clients/client-dynamodb/index.html>
+  * <https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_Operations_Amazon_DynamoDB.html>
+  * <https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_Types_Amazon_DynamoDB.html>
+* MUI
+  * <https://mui.com/getting-started/usage/>
+  * <https://github.com/mui-org/material-ui/tree/master/examples/nextjs-with-typescript>
+  * <https://bareynol.github.io/mui-theme-creator/>
