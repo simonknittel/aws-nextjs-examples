@@ -1,23 +1,27 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { User } from '../services/user'
 
-const useUsers = (initialUsers: User[] = []) => {
-  const [ users, setUsers ] = useState(initialUsers)
-  const [ requestInProgress, setRequestInProgress ] = useState(false)
+interface Options {
+  url: string
+}
 
-  const refresh = async () => {
-    setRequestInProgress(true)
+const useUsers = (initialData: User[] = [], options: Options): [ User [], boolean, () => Promise<void> ] => {
+  const [ data, setData ] = useState(initialData)
+  const [ refreshInProgress, setRefreshInProgress ] = useState(false)
+
+  const refresh = useCallback(async () => {
+    setRefreshInProgress(true)
 
     try {
-      const res = await fetch('/api/user')
-      const users = await res.json();
-      setUsers(users)
+      const res = await fetch(options.url)
+      const json = await res.json();
+      setData(json)
     } catch (error) {
       console.error(error)
     }
 
-    setRequestInProgress(false)
-  }
+    setRefreshInProgress(false)
+  }, [ options.url ])
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -25,13 +29,13 @@ const useUsers = (initialUsers: User[] = []) => {
     }, 30_000)
 
     return () => clearInterval(interval)
-  })
+  }, [ refresh ])
 
-  return {
-    users,
-    usersRequestInProgress: requestInProgress,
-    refreshUsers: refresh
-  }
+  return [
+    data,
+    refreshInProgress,
+    refresh
+  ]
 }
 
 export default useUsers

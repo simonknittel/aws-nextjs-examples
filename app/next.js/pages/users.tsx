@@ -4,11 +4,14 @@ import { userService } from '../services/user'
 import React, { useState } from 'react'
 import CreateUserForm from '../components/CreateUserForm'
 import { DataGrid, GridColDef, GridRowsProp } from '@mui/x-data-grid'
-import { Box, Button, Typography } from '@mui/material'
+import { Box, Button, IconButton, Stack, Typography } from '@mui/material'
 import CreateOutlinedIcon from '@mui/icons-material/CreateOutlined'
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined'
 import { LoadingButton } from '@mui/lab'
 import useUsers from '../hooks/useUsers'
+import prettyDate from '../utils/prettyDate'
+import ContentCopyOutlinedIcon from '@mui/icons-material/ContentCopyOutlined'
+import copyToClipboard from '../utils/copyToClipboard'
 
 export const getServerSideProps: GetServerSideProps = async () => {
   const users = await userService.findAll()
@@ -21,7 +24,7 @@ export const getServerSideProps: GetServerSideProps = async () => {
 }
 
 const Home: NextPage = ({ ssrUsers }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
-  const { users, usersRequestInProgress, refreshUsers } = useUsers(ssrUsers)
+  const [ users, usersRefreshInProgress, refreshUsers ] = useUsers(ssrUsers, { url: '/api/user'})
   const [ deleteRequestInProgress, setDeleteRequestInProgress ] = useState(false)
 
   const onDelete = async (id: string) => {
@@ -40,7 +43,27 @@ const Home: NextPage = ({ ssrUsers }: InferGetServerSidePropsType<typeof getServ
   }
 
   const dataGridColumns: GridColDef[] = [
-    { field: 'id', headerName: 'ID', width: 400 },
+    {
+      field: 'id',
+      headerName: 'ID',
+      width: 400,
+      renderCell: ({ value }) => (
+        <Stack
+          direction="row"
+          justifyContent="space-between"
+        >
+          <Box sx={{ width: '275px' }}>
+            { value }
+          </Box>
+
+          <Box>
+            <IconButton onClick={ () => copyToClipboard(value) }>
+              <ContentCopyOutlinedIcon />
+            </IconButton>
+          </Box>
+        </Stack>
+      )
+    },
     { field: 'name', headerName: 'Name', width: 400 },
     {
       field: 'creationDate',
@@ -48,6 +71,9 @@ const Home: NextPage = ({ ssrUsers }: InferGetServerSidePropsType<typeof getServ
       width: 400,
       type: 'dateTime',
       valueGetter: ({ value }) => value && new Date(value),
+      renderCell: ({ value }) => (
+        <time dateTime={ value.toISOString() }>{ prettyDate(value) }</time>
+      ),
     },
     {
       field: 'actions',
@@ -68,7 +94,7 @@ const Home: NextPage = ({ ssrUsers }: InferGetServerSidePropsType<typeof getServ
         >Delete</LoadingButton>
       </>),
       flex: 1,
-    }
+    },
   ]
 
   const dataGridRows: GridRowsProp = users
@@ -93,7 +119,8 @@ const Home: NextPage = ({ ssrUsers }: InferGetServerSidePropsType<typeof getServ
             columns={ dataGridColumns }
             rows={ dataGridRows }
             autoHeight
-            loading={ usersRequestInProgress }
+            loading={ usersRefreshInProgress }
+            isRowSelectable={ () => false }
           />
         </Box>
       </main>
