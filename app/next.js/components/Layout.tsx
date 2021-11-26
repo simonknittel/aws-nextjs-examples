@@ -1,6 +1,10 @@
-import { AppBar, Box, CssBaseline, Drawer, Grid, IconButton, Toolbar, Typography } from '@mui/material'
+import { AppBar, Box, CssBaseline, Divider, Drawer, IconButton, List, ListItemButton, ListItemIcon, ListItemText, Toolbar } from '@mui/material'
 import React, { useState } from 'react'
-import MenuIcon from '@mui/icons-material/Menu';
+import MenuIcon from '@mui/icons-material/Menu'
+import Footer from './Footer'
+import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined'
+import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined'
+import { NextLinkComposed } from './Link'
 
 const drawerWidth = 240
 
@@ -13,7 +17,24 @@ const Layout: React.FunctionComponent = ({ children })  => {
 
   const drawerContent = (<>
     <nav>
-      Navigation
+      <Toolbar />
+      <Divider />
+
+      <List>
+        <ListItemButton key="Home" component={ NextLinkComposed } to="/">
+          <ListItemIcon>
+            <HomeOutlinedIcon />
+          </ListItemIcon>
+          <ListItemText primary="Home" />
+        </ListItemButton>
+
+        <ListItemButton key="Users" component={ NextLinkComposed } to="/users">
+          <ListItemIcon>
+            <GroupOutlinedIcon />
+          </ListItemIcon>
+          <ListItemText primary="Users" />
+        </ListItemButton>
+      </List>
     </nav>
   </>)
 
@@ -82,7 +103,7 @@ const Layout: React.FunctionComponent = ({ children })  => {
 
           <main>{ children }</main>
 
-          <footer>Footer</footer>
+          <Footer />
         </Box>
       </Box>
     </>

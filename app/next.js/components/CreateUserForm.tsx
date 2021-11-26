@@ -24,7 +24,7 @@ const CreateUserForm = ({ submitCallback }: { submitCallback: any }) => {
       headers: {
         'Content-Type': 'application/json'
       },
-      method: 'PUT'
+      method: 'POST'
     })
 
     reset()

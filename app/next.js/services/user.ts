@@ -1,10 +1,10 @@
-import { BatchGetItemCommand, BatchGetItemCommandInput, BatchWriteItemCommand, BatchWriteItemCommandInput, ScanCommand, ScanCommandInput, WriteRequest } from '@aws-sdk/client-dynamodb'
+import { BatchGetItemCommand, BatchGetItemCommandInput, BatchWriteItemCommand, BatchWriteItemCommandInput, Delete, ScanCommand, ScanCommandInput, WriteRequest } from '@aws-sdk/client-dynamodb'
 import { ddbClient } from './dynamodb'
 import { v4 as uuidv4 } from 'uuid'
 
 const TABLE_NAME = 'User'
 
-interface User {
+export interface User {
   id: string;
   name: string;
   creationDate: number;
@@ -12,6 +12,10 @@ interface User {
 
 interface CreateItem {
   name: User['name'];
+}
+
+interface DeleteItem {
+  id: User['id'];
 }
 
 class UserService {
@@ -106,6 +110,32 @@ class UserService {
     } catch (error) {
       console.error(error)
       return []
+    }
+  }
+
+  public async delete(items: DeleteItem[]) {
+    const requests: WriteRequest[] = items.map(item => {
+      return {
+        DeleteRequest: {
+          Key: {
+            Id: { S: item.id },
+          }
+        }
+      }
+    })
+
+    const input: BatchWriteItemCommandInput = {
+      RequestItems: {
+        [TABLE_NAME]: requests
+      }
+    }
+
+    const command = new BatchWriteItemCommand(input)
+
+    try {
+      await ddbClient.send(command)
+    } catch (error) {
+      console.error(error)
     }
   }
 }

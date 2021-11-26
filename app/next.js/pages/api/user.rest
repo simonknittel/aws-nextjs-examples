@@ -3,9 +3,13 @@ Accept: application/json
 
 ###
 
-PUT http://localhost:3000/api/user
+POST http://localhost:3000/api/user
 Content-Type: application/json
 
 {
   "name": "Max"
 }
+
+###
+
+DELETE http://localhost:3000/api/user/8c7226f2-6998-4a6d-89cc-71d31f6ad266
