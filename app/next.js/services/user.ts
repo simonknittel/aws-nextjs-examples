@@ -1,24 +1,19 @@
-import { BatchGetItemCommand, BatchGetItemCommandInput, BatchWriteItemCommand, BatchWriteItemCommandInput, Delete, ScanCommand, ScanCommandInput, WriteRequest } from '@aws-sdk/client-dynamodb'
+import { BatchGetItemCommand, BatchGetItemCommandInput, BatchWriteItemCommand, BatchWriteItemCommandInput, ScanCommand, ScanCommandInput, UpdateItemCommand, UpdateItemCommandInput, WriteRequest } from '@aws-sdk/client-dynamodb'
 import { ddbClient } from './dynamodb'
 import { v4 as uuidv4 } from 'uuid'
+import { CreateItem, DeleteItem, UserServiceInterface, User, PatchItem } from './interfaces/user'
 
-const TABLE_NAME = 'User'
+class UserService implements UserServiceInterface {
+  private TABLE_NAME = 'User'
 
-export interface User {
-  id: string;
-  name: string;
-  creationDate: number;
-}
+  private ATTRIBUTES = [
+    'Id',
+    'Name',
+    'CreationDate',
+    'Creator',
+    'LastEditDate',
+  ]
 
-interface CreateItem {
-  name: User['name'];
-}
-
-interface DeleteItem {
-  id: User['id'];
-}
-
-class UserService {
   public async create(items: CreateItem[]) {
     const requests: WriteRequest[] = items.map(item => {
       return {
@@ -34,7 +29,7 @@ class UserService {
 
     const input: BatchWriteItemCommandInput = {
       RequestItems: {
-        [TABLE_NAME]: requests
+        [this.TABLE_NAME]: requests
       }
     }
 
@@ -44,6 +39,7 @@ class UserService {
       await ddbClient.send(command)
     } catch (error) {
       console.error(error)
+      throw error
     }
   }
 
@@ -55,26 +51,18 @@ class UserService {
      */
 
     const input: ScanCommandInput = {
-      TableName: TABLE_NAME,
-      AttributesToGet: [
-        'Id', 'Name', 'CreationDate'
-      ]
+      TableName: this.TABLE_NAME,
+      AttributesToGet: this.ATTRIBUTES
     }
 
     const command = new ScanCommand(input)
 
     try {
       const response = await ddbClient.send(command)
-      return response.Items!.map(user => {
-        return {
-          id: user.Id.S!,
-          name: user.Name.S!,
-          creationDate: parseInt(user.CreationDate.N!),
-        }
-      })
+      return response.Items!.map(this.mapper)
     } catch (error) {
       console.error(error)
-      return []
+      throw error
     }
   }
 
@@ -87,11 +75,9 @@ class UserService {
 
     const input: BatchGetItemCommandInput = {
       RequestItems: {
-        [TABLE_NAME]: {
+        [this.TABLE_NAME]: {
           Keys: keys,
-          AttributesToGet: [
-            'Id', 'Name', 'CreationDate'
-          ]
+          AttributesToGet: this.ATTRIBUTES
         }
       },
     }
@@ -100,16 +86,41 @@ class UserService {
 
     try {
       const response = await ddbClient.send(command)
-      return response.Responses![TABLE_NAME].map(user => {
-        return {
-          id: user.Id.S!,
-          name: user.Name.S!,
-          creationDate: parseInt(user.CreationDate.N!),
-        }
-      })
+      return response.Responses![this.TABLE_NAME].map(this.mapper)
     } catch (error) {
       console.error(error)
-      return []
+      throw error
+    }
+  }
+
+  public async update(id: User['id'], patch: PatchItem) {
+    let updateExpression: UpdateItemCommandInput['UpdateExpression'] = ''
+    const attributeNames: UpdateItemCommandInput['ExpressionAttributeNames'] = {}
+    const attributeValues: UpdateItemCommandInput['ExpressionAttributeValues'] = {}
+
+    if (patch.name) {
+      updateExpression += `#name = :name`
+      attributeNames['#name'] = 'Name'
+      attributeValues[':name'] = { S: patch.name }
+    }
+
+    const input: UpdateItemCommandInput = {
+      TableName: this.TABLE_NAME,
+      Key: {
+        Id: { S: id },
+      },
+      UpdateExpression: `SET ${ updateExpression }`,
+      ExpressionAttributeNames: attributeNames,
+      ExpressionAttributeValues: attributeValues,
+    }
+
+    const command = new UpdateItemCommand(input)
+
+    try {
+      await ddbClient.send(command)
+    } catch (error) {
+      console.error(error)
+      throw error
     }
   }
 
@@ -126,7 +137,7 @@ class UserService {
 
     const input: BatchWriteItemCommandInput = {
       RequestItems: {
-        [TABLE_NAME]: requests
+        [this.TABLE_NAME]: requests
       }
     }
 
@@ -136,7 +147,20 @@ class UserService {
       await ddbClient.send(command)
     } catch (error) {
       console.error(error)
+      throw error
     }
+  }
+
+  private mapper(user: any) {
+    const rtn: User = {
+      id: user.Id.S!,
+      name: user.Name.S!,
+      creationDate: parseInt(user.CreationDate.N!),
+    }
+
+    if (user.LastEditDate?.N) rtn.lastEditDate = parseInt(user.LastEditDate.N)
+
+    return rtn
   }
 }
 

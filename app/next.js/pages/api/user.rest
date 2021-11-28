@@ -3,7 +3,21 @@ Accept: application/json
 
 ###
 
+GET http://localhost:3000/api/user/ac8f5587-33dc-412c-9b0b-a134e7cf6f7b
+Accept: application/json
+
+###
+
 POST http://localhost:3000/api/user
+Content-Type: application/json
+
+{
+  "name": "Frank"
+}
+
+###
+
+PATCH http://localhost:3000/api/user/ac8f5587-33dc-412c-9b0b-a134e7cf6f7b
 Content-Type: application/json
 
 {
@@ -12,4 +26,4 @@ Content-Type: application/json
 
 ###
 
-DELETE http://localhost:3000/api/user/8c7226f2-6998-4a6d-89cc-71d31f6ad266
+DELETE http://localhost:3000/api/user/68776039-a568-49c1-9f95-68de56da0c7d

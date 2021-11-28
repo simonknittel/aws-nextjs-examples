@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import { User } from '../services/user'
+import { User } from '../services/interfaces/user'
 
 interface Options {
   url: string
