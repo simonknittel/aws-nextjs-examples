@@ -3,7 +3,7 @@ import LoadingButton from '@mui/lab/LoadingButton'
 import { ReactEventHandler, useState } from 'react'
 import { SendOutlined } from '@mui/icons-material'
 
-const CreateUserForm = ({ submitCallback }: { submitCallback: any }) => {
+const CreateUserForm = ({ submitCallback, csrfToken }: { submitCallback: any, csrfToken: string }) => {
   const [ name, setName ] = useState('')
   const [ requestInProgress, setRequestInProgress ] = useState(false)
 
@@ -17,14 +17,21 @@ const CreateUserForm = ({ submitCallback }: { submitCallback: any }) => {
 
     setRequestInProgress(true)
 
+    const headers: HeadersInit = {
+      'Content-Type': 'application/json'
+    }
+    /**
+     * We can't import the header name from the csrfService.ts file otherwise
+     * the file would be fully included in the client bundle.
+     */
+    if (csrfToken) headers['x-csrf-token'] = csrfToken
+
     await fetch('/api/user', {
       body: JSON.stringify({
         name
       }),
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      method: 'POST'
+      method: 'POST',
+      headers,
     })
 
     reset()

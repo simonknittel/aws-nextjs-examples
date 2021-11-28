@@ -6,13 +6,12 @@ import CreateUserForm from '../components/CreateUserForm'
 import { DataGrid, GridColDef, GridRowsProp, GridSortDirection } from '@mui/x-data-grid'
 import { Box, Button, IconButton, Stack, Typography } from '@mui/material'
 import CreateOutlinedIcon from '@mui/icons-material/CreateOutlined'
-import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined'
-import { LoadingButton } from '@mui/lab'
 import useUsers from '../hooks/useUsers'
 import prettyDate from '../utils/prettyDate'
 import ContentCopyOutlinedIcon from '@mui/icons-material/ContentCopyOutlined'
 import copyToClipboard from '../utils/copyToClipboard'
 import { csrfService } from '../services/csrfService'
+import DeleteButton from '../components/DeleteButton'
 
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   const props: { [key: string]: any } = {}
@@ -27,31 +26,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
 }
 
 const Home: NextPage = ({ ssrUsers, csrfToken }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
-  const [ users, usersRefreshInProgress, refreshUsers ] = useUsers(ssrUsers, { url: '/api/user'})
-  const [ deleteRequestInProgress, setDeleteRequestInProgress ] = useState(false)
-
-  const onDelete = async (id: string) => {
-    setDeleteRequestInProgress(true)
-
-    const headers: HeadersInit = {}
-    /**
-     * We can't import the header name from the csrfService.ts file otherwise
-     * the file would fully included in the client bundle.
-     */
-    if (csrfToken) headers['x-csrf-token'] = csrfToken
-
-    try {
-      await fetch(`/api/user/${ id }`, {
-        method: 'DELETE',
-        headers,
-      })
-    } catch (error) {
-      console.error(error)
-    }
-
-    setDeleteRequestInProgress(false)
-    refreshUsers()
-  }
+  const [ users, usersRefreshInProgress, refreshUsers ] = useUsers(ssrUsers, { url: '/api/user' })
 
   const dataGridColumns: GridColDef[] = [
     {
@@ -109,13 +84,11 @@ const Home: NextPage = ({ ssrUsers, csrfToken }: InferGetServerSidePropsType<typ
           startIcon={<CreateOutlinedIcon />}
         >Edit</Button>
 
-        <LoadingButton
-          variant="outlined"
-          size="small"
-          startIcon={<DeleteOutlinedIcon />} sx={{ ml: 1 }}
-          onClick={() => onDelete(params.getValue(params.id, 'id') as string) }
-          loading={ deleteRequestInProgress }
-        >Delete</LoadingButton>
+        <DeleteButton
+          params={ params }
+          csrfToken={ csrfToken }
+          deleteCallback={ refreshUsers }
+        />
       </>),
       flex: 1,
     },
@@ -146,7 +119,7 @@ const Home: NextPage = ({ ssrUsers, csrfToken }: InferGetServerSidePropsType<typ
         </Typography>
 
         <Box pt={ 2  }>
-          <CreateUserForm submitCallback={ refreshUsers } />
+          <CreateUserForm submitCallback={ refreshUsers } csrfToken={ csrfToken } />
         </Box>
 
         <Box pt={ 4 }>
