@@ -64,6 +64,7 @@ COPY --chown=node:node --from=builder /app/package.json /app/package.json
 # Environmental variables for Next.js
 ENV AWS_ACCESS_KEY_ID=
 ENV AWS_SECRET_ACCESS_KEY=
+ENV CSRF_SECRET=
 
 
 USER node

@@ -1,5 +1,6 @@
 import Ajv from 'ajv'
 import type { NextApiRequest, NextApiResponse } from 'next'
+import { csrfService } from '../../../services/csrfService'
 import { userService } from '../../../services/user'
 
 export default async function handler(
@@ -21,7 +22,6 @@ async function get(
     const users = await userService.findAll()
     return res.json(users)
   } catch (error) {
-    console.error(error)
     return res
       .status(500)
       .end()
@@ -44,6 +44,8 @@ async function post(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+  if (csrfService.validateRequest(req, res) !== true) return
+
   const valid = validate(req.body)
   if (!valid) {
     return res
@@ -52,9 +54,9 @@ async function post(
   }
 
   try {
+    // @TODO: Pass creator from cookie
     await userService.create([ req.body ])
   } catch (error) {
-    console.error(error)
     return res
       .status(500)
       .end()
@@ -71,6 +73,6 @@ async function notAllowed(
 ) {
   return res
     .status(405)
-    .setHeader('Allow', 'GET, POST, DELETE')
+    .setHeader('Allow', 'GET, POST')
     .end()
 }

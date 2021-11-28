@@ -3,7 +3,7 @@ import Head from 'next/head'
 import { userService } from '../services/user'
 import React, { useState } from 'react'
 import CreateUserForm from '../components/CreateUserForm'
-import { DataGrid, GridColDef, GridRowsProp } from '@mui/x-data-grid'
+import { DataGrid, GridColDef, GridRowsProp, GridSortDirection } from '@mui/x-data-grid'
 import { Box, Button, IconButton, Stack, Typography } from '@mui/material'
 import CreateOutlinedIcon from '@mui/icons-material/CreateOutlined'
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined'
@@ -12,27 +12,38 @@ import useUsers from '../hooks/useUsers'
 import prettyDate from '../utils/prettyDate'
 import ContentCopyOutlinedIcon from '@mui/icons-material/ContentCopyOutlined'
 import copyToClipboard from '../utils/copyToClipboard'
+import { csrfService } from '../services/csrfService'
 
-export const getServerSideProps: GetServerSideProps = async () => {
+export const getServerSideProps: GetServerSideProps = async ({ req }) => {
+  const props: { [key: string]: any } = {}
+
   const users = await userService.findAll()
+  props.ssrUsers = users
 
-  return {
-    props: {
-      ssrUsers: users
-    }
-  }
+  const csrfToken = csrfService.generateToken(req)
+  if (csrfToken) props.csrfToken = csrfToken
+
+  return { props }
 }
 
-const Home: NextPage = ({ ssrUsers }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+const Home: NextPage = ({ ssrUsers, csrfToken }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const [ users, usersRefreshInProgress, refreshUsers ] = useUsers(ssrUsers, { url: '/api/user'})
   const [ deleteRequestInProgress, setDeleteRequestInProgress ] = useState(false)
 
   const onDelete = async (id: string) => {
     setDeleteRequestInProgress(true)
 
+    const headers: HeadersInit = {}
+    /**
+     * We can't import the header name from the csrfService.ts file otherwise
+     * the file would fully included in the client bundle.
+     */
+    if (csrfToken) headers['x-csrf-token'] = csrfToken
+
     try {
       await fetch(`/api/user/${ id }`, {
-        method: 'DELETE'
+        method: 'DELETE',
+        headers,
       })
     } catch (error) {
       console.error(error)
@@ -66,13 +77,26 @@ const Home: NextPage = ({ ssrUsers }: InferGetServerSidePropsType<typeof getServ
     },
     { field: 'name', headerName: 'Name', width: 400 },
     {
+      field: 'lastEditDate',
+      headerName: 'Last edit',
+      width: 250,
+      type: 'dateTime',
+      valueGetter: ({ value }) => value && new Date(value),
+      renderCell: ({ value }) => {
+        if (!value) return null
+        return (
+          <time dateTime={ value.toISOString() } title={ value.toLocaleString() }>{ prettyDate(value) }</time>
+        )
+      },
+    },
+    {
       field: 'creationDate',
-      headerName: 'Creation date',
-      width: 400,
+      headerName: 'Creation',
+      width: 250,
       type: 'dateTime',
       valueGetter: ({ value }) => value && new Date(value),
       renderCell: ({ value }) => (
-        <time dateTime={ value.toISOString() }>{ prettyDate(value) }</time>
+        <time dateTime={ value.toISOString() } title={ value.toLocaleString() }>{ prettyDate(value) }</time>
       ),
     },
     {
@@ -99,6 +123,17 @@ const Home: NextPage = ({ ssrUsers }: InferGetServerSidePropsType<typeof getServ
 
   const dataGridRows: GridRowsProp = users
 
+  const [ sortModel, setSortModel ] = useState([
+    {
+      field: 'lastEditDate',
+      sort: 'desc' as GridSortDirection, // @TODO: Not sure why this assertion is necessary
+    },
+    {
+      field: 'creationDate',
+      sort: 'desc' as GridSortDirection, // @TODO: Not sure why this assertion is necessary
+    },
+  ])
+
   return (
     <>
       <Head>
@@ -121,6 +156,8 @@ const Home: NextPage = ({ ssrUsers }: InferGetServerSidePropsType<typeof getServ
             autoHeight
             loading={ usersRefreshInProgress }
             isRowSelectable={ () => false }
+            sortModel={ sortModel }
+            onSortModelChange={ model => setSortModel(model) }
           />
         </Box>
       </main>
