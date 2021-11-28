@@ -1,18 +1,16 @@
 import Ajv from 'ajv'
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { csrfService } from '../../../services/csrfService'
 import { userService } from '../../../services/user'
+import nc from 'next-connect'
+import { validateCSRFRequest } from '../../../utils/csrf'
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
-  switch (req.method) {
-    case 'PATCH': return patch(req, res)
-    case 'DELETE': return deleteMethod(req, res)
-    default: return notAllowed(req, res)
-  }
-}
+const handler = nc({
+  onNoMatch: notAllowed
+})
+  .patch(validateCSRFRequest, patchHandler)
+  .delete(validateCSRFRequest, deleteHandler)
+
+export default handler
 
 const schema = {
   type: 'object',
@@ -26,12 +24,10 @@ const schema = {
 const ajv = new Ajv()
 const validate = ajv.compile(schema)
 
-async function patch(
+async function patchHandler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  if (csrfService.validateRequest(req, res) !== true) return
-
   const valid = validate(req.body)
   if (!valid) {
     return res
@@ -58,12 +54,10 @@ async function patch(
     .end()
 }
 
-async function deleteMethod(
+async function deleteHandler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  if (csrfService.validateRequest(req, res) !== true) return
-
   const { id } = req.query
 
   try {

@@ -10,8 +10,8 @@ import useUsers from '../hooks/useUsers'
 import prettyDate from '../utils/prettyDate'
 import ContentCopyOutlinedIcon from '@mui/icons-material/ContentCopyOutlined'
 import copyToClipboard from '../utils/copyToClipboard'
-import { csrfService } from '../services/csrfService'
 import DeleteButton from '../components/DeleteButton'
+import { generateCSRFToken } from '../utils/csrf'
 
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   const props: { [key: string]: any } = {}
@@ -19,7 +19,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   const users = await userService.findAll()
   props.ssrUsers = users
 
-  const csrfToken = csrfService.generateToken(req)
+  const csrfToken = generateCSRFToken(req)
   if (csrfToken) props.csrfToken = csrfToken
 
   return { props }

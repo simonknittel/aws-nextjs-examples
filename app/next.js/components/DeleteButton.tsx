@@ -5,7 +5,7 @@ import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined'
 interface DeleteButtonProps {
   params: any;
   csrfToken: string;
-  deleteCallback(): void;
+  deleteCallback(): any;
 }
 
 const DeleteButton = ({ params, csrfToken, deleteCallback }: DeleteButtonProps) => {

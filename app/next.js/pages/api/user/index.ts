@@ -1,20 +1,18 @@
 import Ajv from 'ajv'
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { csrfService } from '../../../services/csrfService'
 import { userService } from '../../../services/user'
+import nc from 'next-connect'
+import { validateCSRFRequest } from '../../../utils/csrf'
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
-  switch (req.method) {
-    case 'GET': return get(req, res)
-    case 'POST': return post(req, res)
-    default: return notAllowed(req, res)
-  }
-}
+const handler = nc({
+  onNoMatch: notAllowed
+})
+  .get(getHandler)
+  .post(validateCSRFRequest, postHandler)
 
-async function get(
+export default handler
+
+async function getHandler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
@@ -40,12 +38,10 @@ const schema = {
 const ajv = new Ajv()
 const validate = ajv.compile(schema)
 
-async function post(
+async function postHandler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  if (csrfService.validateRequest(req, res) !== true) return
-
   const valid = validate(req.body)
   if (!valid) {
     return res
@@ -69,7 +65,7 @@ async function post(
 
 async function notAllowed(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse,
 ) {
   return res
     .status(405)
