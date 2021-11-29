@@ -1,18 +1,10 @@
-import Ajv from 'ajv'
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { userService } from '../../../services/user'
 import nc from 'next-connect'
 import { validateCSRFRequest } from '../../../utils/csrf'
+import { bodyValidation } from '../../../utils/bodyValidation'
 
-const handler = nc({
-  onNoMatch: notAllowed
-})
-  .patch(validateCSRFRequest, patchHandler)
-  .delete(validateCSRFRequest, deleteHandler)
-
-export default handler
-
-const schema = {
+const patchSchema = {
   type: 'object',
   properties: {
     name: { type: 'string' },
@@ -21,20 +13,18 @@ const schema = {
   additionalProperties: false,
 }
 
-const ajv = new Ajv()
-const validate = ajv.compile(schema)
+const handler = nc({
+  onNoMatch: notAllowed
+})
+  .patch(validateCSRFRequest(), bodyValidation(patchSchema), patchHandler)
+  .delete(validateCSRFRequest(), deleteHandler)
+
+export default handler
 
 async function patchHandler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const valid = validate(req.body)
-  if (!valid) {
-    return res
-      .status(400)
-      .end()
-  }
-
   const { id } = req.query
 
   try {

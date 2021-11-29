@@ -21,38 +21,40 @@ export function generateCSRFToken(req: ReqProp) {
   return `${ timestamp }; ${ hmac }`
 }
 
-export function validateCSRFRequest(
-  req: NextApiRequest,
-  res: NextApiResponse,
-  next: NextHandler
-) {
-  if (!process.env.CSRF_SECRET) return next()
+export function validateCSRFRequest() {
+  return (
+    req: NextApiRequest,
+    res: NextApiResponse,
+    next: NextHandler
+  ) => {
+    if (!process.env.CSRF_SECRET) return next()
 
-  // Check if required cookies and headers are available
-  if (!req.cookies[SESSION_COOKIE]) return res.status(403).json({ error: { message: 'Missing session cookie during CSRF token validation' } })
-  if (!req.headers[CSRF_TOKEN_HEADER]) return res.status(403).json({ error: { message: 'Missing CSRF token' } })
+    // Check if required cookies and headers are available
+    if (!req.cookies[SESSION_COOKIE]) return res.status(403).json({ error: { message: 'Missing session cookie during CSRF token validation' } })
+    if (!req.headers[CSRF_TOKEN_HEADER]) return res.status(403).json({ error: { message: 'Missing CSRF token' } })
 
-  // Retrieve and prepare transmitted CSRF token
-  let rawTransmittedTimestamp: string
-  let rawTransmittedHmac: string
-  if (typeof req.headers[CSRF_TOKEN_HEADER] === 'string') {
-    [ rawTransmittedTimestamp, rawTransmittedHmac ] = (req.headers[CSRF_TOKEN_HEADER] as string).split(';') // @TODO: Not sure why this assertion is necessary
-  } else {
-    [ rawTransmittedTimestamp, rawTransmittedHmac ] = (req.headers[CSRF_TOKEN_HEADER]!.at(-1) as string).split(';') // @TODO: Not sure why this assertion is necessary
+    // Retrieve and prepare transmitted CSRF token
+    let rawTransmittedTimestamp: string
+    let rawTransmittedHmac: string
+    if (typeof req.headers[CSRF_TOKEN_HEADER] === 'string') {
+      [ rawTransmittedTimestamp, rawTransmittedHmac ] = (req.headers[CSRF_TOKEN_HEADER] as string).split(';') // @TODO: Not sure why this assertion is necessary
+    } else {
+      [ rawTransmittedTimestamp, rawTransmittedHmac ] = (req.headers[CSRF_TOKEN_HEADER]!.at(-1) as string).split(';') // @TODO: Not sure why this assertion is necessary
+    }
+    const transmittedTimestamp = parseInt(rawTransmittedTimestamp)
+    const transmittedHmac = rawTransmittedHmac.trim()
+
+    // Check if CSRF token is expired
+    const now = Date.now()
+    if (now - transmittedTimestamp > CSRF_MAX_AGE) return res.status(403).json({ error: { message: 'Expired CSRF token' } })
+
+    // Check if CSRF token has been manipulated
+    const correctPayload = `${ transmittedTimestamp }; ${req.cookies[SESSION_COOKIE]}`
+    const correctHmac = generateHmac(correctPayload)
+    if (correctHmac !== transmittedHmac) return res.status(403).json({ error: { message: 'Invalid CSRF token' } })
+
+    return next()
   }
-  const transmittedTimestamp = parseInt(rawTransmittedTimestamp)
-  const transmittedHmac = rawTransmittedHmac.trim()
-
-  // Check if CSRF token is expired
-  const now = Date.now()
-  if (now - transmittedTimestamp > CSRF_MAX_AGE) return res.status(403).json({ error: { message: 'Expired CSRF token' } })
-
-  // Check if CSRF token has been manipulated
-  const correctPayload = `${ transmittedTimestamp }; ${req.cookies[SESSION_COOKIE]}`
-  const correctHmac = generateHmac(correctPayload)
-  if (correctHmac !== transmittedHmac) return res.status(403).json({ error: { message: 'Invalid CSRF token' } })
-
-  return next()
 }
 
 function generateHmac(payload: string) {

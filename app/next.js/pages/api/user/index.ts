@@ -1,14 +1,23 @@
-import Ajv from 'ajv'
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { userService } from '../../../services/user'
 import nc from 'next-connect'
 import { validateCSRFRequest } from '../../../utils/csrf'
+import { bodyValidation } from '../../../utils/bodyValidation'
+
+const postSchema = {
+  type: 'object',
+  properties: {
+    name: { type: 'string' },
+  },
+  required: [ 'name' ],
+  additionalProperties: false,
+}
 
 const handler = nc({
   onNoMatch: notAllowed
 })
   .get(getHandler)
-  .post(validateCSRFRequest, postHandler)
+  .post(validateCSRFRequest(), bodyValidation(postSchema), postHandler)
 
 export default handler
 
@@ -26,29 +35,10 @@ async function getHandler(
   }
 }
 
-const schema = {
-  type: 'object',
-  properties: {
-    name: { type: 'string' },
-  },
-  required: [ 'name' ],
-  additionalProperties: false,
-}
-
-const ajv = new Ajv()
-const validate = ajv.compile(schema)
-
 async function postHandler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const valid = validate(req.body)
-  if (!valid) {
-    return res
-      .status(400)
-      .end()
-  }
-
   try {
     // @TODO: Pass creator from cookie
     await userService.create([ req.body ])
