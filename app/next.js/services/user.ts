@@ -98,8 +98,12 @@ class UserService implements UserServiceInterface {
     const attributeNames: UpdateItemCommandInput['ExpressionAttributeNames'] = {}
     const attributeValues: UpdateItemCommandInput['ExpressionAttributeValues'] = {}
 
+    updateExpression += `#lastEditDate = :lastEditDate`
+    attributeNames['#lastEditDate'] = 'LastEditDate'
+    attributeValues[':lastEditDate'] = { N: Date.now().toString() }
+
     if (patch.name) {
-      updateExpression += `#name = :name`
+      updateExpression += `, #name = :name`
       attributeNames['#name'] = 'Name'
       attributeValues[':name'] = { S: patch.name }
     }
