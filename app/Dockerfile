@@ -7,6 +7,9 @@
 
 FROM docker.io/library/node:16.13.0-alpine3.14 AS builder
 
+ARG AWS_ACCESS_KEY_ID
+ARG AWS_SECRET_ACCESS_KEY
+
 WORKDIR /app
 COPY next.js .
 RUN apk add --no-cache libc6-compat && \

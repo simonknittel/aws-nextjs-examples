@@ -101,7 +101,7 @@ Minimal containerized web application with database and authentication hosted on
 2. Build and tag the container image
 
     ```sh
-    docker build -t simonknittel/aws-service ./app
+    docker build -t simonknittel/aws-service --build-arg AWS_ACCESS_KEY_ID= --build-arg AWS_SECRET_ACCESS_KEY= ./app
     docker tag simonknittel/aws-service:latest 533499034851.dkr.ecr.eu-west-1.amazonaws.com/simonknittel/aws-service:latest
     ```
 
