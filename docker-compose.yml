@@ -19,7 +19,7 @@ services:
     command: --redirect-url "https://localhost:8443/oauth2/callback"
 
   https_proxy:
-    image: nginx:1.21.4-alpine
+    image: docker.io/library/nginx:1.21.4-alpine
     ports:
       - 127.0.0.1:8080:80/tcp
       - 127.0.0.1:8443:443/tcp

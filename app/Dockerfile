@@ -5,8 +5,7 @@
 # builder
 #
 
-FROM node:16.13.0-alpine3.14 AS builder
-
+FROM docker.io/library/node:16.13.0-alpine3.14 AS builder
 
 WORKDIR /app
 COPY next.js .
@@ -19,7 +18,7 @@ RUN apk add --no-cache libc6-compat && \
 # dependencies
 #
 
-FROM node:16.13.0-alpine3.14 AS dependencies
+FROM docker.io/library/node:16.13.0-alpine3.14 AS dependencies
 
 WORKDIR /app
 ADD https://gobinaries.com/tj/node-prune /usr/local/bin/
@@ -33,7 +32,7 @@ RUN npm ci --only=production && \
 # runner
 #
 
-FROM node:16.13.0-alpine3.14 AS runner
+FROM docker.io/library/node:16.13.0-alpine3.14 AS runner
 
 COPY entrypoint.sh ./entrypoint.sh
 RUN chmod +x ./entrypoint.sh
