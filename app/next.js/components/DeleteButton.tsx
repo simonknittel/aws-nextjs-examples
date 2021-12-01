@@ -1,7 +1,7 @@
 import { LoadingButton } from '@mui/lab'
 import React, { ReactEventHandler } from 'react'
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined'
-import useFetch from '../hooks/useFetch'
+import useAPI from '../hooks/useAPI'
 
 interface DeleteButtonProps {
   params: any;
@@ -10,7 +10,7 @@ interface DeleteButtonProps {
 }
 
 const DeleteButton = ({ params, csrfToken, deleteCallback }: DeleteButtonProps) => {
-  const [ data, isLoading, doFetch ] = useFetch(`/api/user/${ params.id }`, {
+  const [ data, isLoading, doFetch ] = useAPI(`/user/${ params.id }`, {
     method: 'DELETE',
     csrfToken,
   })

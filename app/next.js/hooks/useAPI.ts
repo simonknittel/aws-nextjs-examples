@@ -5,7 +5,7 @@ interface Options extends RequestInit {
 }
 
 // @TODO: Implement error handling
-const useFetch = (url: string, options: Options): [ any, boolean, () => Promise<void> ] => {
+const useAPI = (url: string, options: Options): [ any, boolean, () => Promise<void> ] => {
   const [ data, setData ] = useState()
   const [ isLoading, setIsLoading ] = useState(false)
 
@@ -28,7 +28,7 @@ const useFetch = (url: string, options: Options): [ any, boolean, () => Promise<
       setHeader(init.headers, 'X-CSRF-Token', options.csrfToken)
     }
 
-    const response = await fetch(url, init)
+    const response = await fetch('/api' + url, init)
 
     if (response.headers.get('content-type') === 'application/json') {
       const json = await response.json()
@@ -45,7 +45,7 @@ const useFetch = (url: string, options: Options): [ any, boolean, () => Promise<
   ]
 }
 
-export default useFetch
+export default useAPI
 
 function setHeader(headers: HeadersInit, key: string, value: string) {
   if (headers instanceof Headers) {

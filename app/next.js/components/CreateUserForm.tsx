@@ -2,7 +2,7 @@ import { TextField } from '@mui/material'
 import LoadingButton from '@mui/lab/LoadingButton'
 import { ReactEventHandler, useState } from 'react'
 import { SendOutlined } from '@mui/icons-material'
-import useFetch from '../hooks/useFetch'
+import useAPI from '../hooks/useAPI'
 
 const CreateUserForm = ({ submitCallback, csrfToken }: { submitCallback: any, csrfToken: string }) => {
   const [ name, setName ] = useState('')
@@ -11,7 +11,7 @@ const CreateUserForm = ({ submitCallback, csrfToken }: { submitCallback: any, cs
     setName('')
   }
 
-  const [ data, isLoading, doFetch ] = useFetch('/api/user', {
+  const [ data, isLoading, doFetch ] = useAPI('/user', {
     body: JSON.stringify({
       name
     }),
