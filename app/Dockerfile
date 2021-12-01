@@ -56,7 +56,6 @@ ENV OAUTH2_PROXY_COOKIE_SECRET=
 
 # Move built Next.js from builder step to runner
 COPY --chown=node:node --from=builder /app/next.config.js ./
-COPY --chown=node:node --from=builder /app/public /app/public
 COPY --chown=node:node --from=builder /app/.next /app/.next
 COPY --chown=node:node --from=dependencies /app/node_modules /app/node_modules
 COPY --chown=node:node --from=builder /app/package.json /app/package.json
