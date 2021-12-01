@@ -2,6 +2,7 @@ export interface User {
   id: string;
   name: string;
   creationDate: number;
+  creator?: string;
   lastEditDate?: number;
 }
 

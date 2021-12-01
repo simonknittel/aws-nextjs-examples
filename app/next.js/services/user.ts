@@ -7,11 +7,11 @@ class UserService implements UserServiceInterface {
   private TABLE_NAME = 'User'
 
   private ATTRIBUTES = [
-    'Id',
-    'Name',
-    'CreationDate',
-    'Creator',
-    'LastEditDate',
+    'Id', // S
+    'Name', // S
+    'CreationDate', // N
+    'Creator', // S
+    'LastEditDate', // N
   ]
 
   public async create(items: CreateItem[]) {
@@ -98,14 +98,14 @@ class UserService implements UserServiceInterface {
     const attributeNames: UpdateItemCommandInput['ExpressionAttributeNames'] = {}
     const attributeValues: UpdateItemCommandInput['ExpressionAttributeValues'] = {}
 
-    updateExpression += `#lastEditDate = :lastEditDate`
-    attributeNames['#lastEditDate'] = 'LastEditDate'
-    attributeValues[':lastEditDate'] = { N: Date.now().toString() }
+    updateExpression += `#a = :a`
+    attributeNames['#a'] = 'LastEditDate'
+    attributeValues[':a'] = { N: Date.now().toString() }
 
     if (patch.name) {
-      updateExpression += `, #name = :name`
-      attributeNames['#name'] = 'Name'
-      attributeValues[':name'] = { S: patch.name }
+      updateExpression += `, #b = :b`
+      attributeNames['#b'] = 'Name'
+      attributeValues[':b'] = { S: patch.name }
     }
 
     const input: UpdateItemCommandInput = {
@@ -162,6 +162,7 @@ class UserService implements UserServiceInterface {
       creationDate: parseInt(user.CreationDate.N!),
     }
 
+    if (user.Creator?.S) rtn.creator = user.Creator.S
     if (user.LastEditDate?.N) rtn.lastEditDate = parseInt(user.LastEditDate.N)
 
     return rtn
