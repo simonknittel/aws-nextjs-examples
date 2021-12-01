@@ -5,7 +5,7 @@ interface Options {
   url: string
 }
 
-const useUsers = (initialData: User[] = [], options: Options): [ User [], boolean, () => Promise<void> ] => {
+const useUsers = (initialData: User[] = [], options: Options): [ User[], boolean, () => Promise<void> ] => {
   const [ data, setData ] = useState(initialData)
   const [ refreshInProgress, setRefreshInProgress ] = useState(false)
 
