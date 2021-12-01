@@ -1,6 +1,7 @@
 import { LoadingButton } from '@mui/lab'
-import React, { useState } from 'react'
+import React, { ReactEventHandler } from 'react'
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined'
+import useFetch from '../hooks/useFetch'
 
 interface DeleteButtonProps {
   params: any;
@@ -9,28 +10,14 @@ interface DeleteButtonProps {
 }
 
 const DeleteButton = ({ params, csrfToken, deleteCallback }: DeleteButtonProps) => {
-  const [ requestInProgress, setRequestInProgress ] = useState(false)
+  const [ data, isLoading, doFetch ] = useFetch(`/api/user/${ params.id }`, {
+    method: 'DELETE',
+    csrfToken,
+  })
 
-  const onDelete = async (id: string) => {
-    setRequestInProgress(true)
-
-    const headers: HeadersInit = {}
-    /**
-     * We can't import the header name from the csrfService.ts file otherwise
-     * the file would be fully included in the client bundle.
-     */
-    if (csrfToken) headers['x-csrf-token'] = csrfToken
-
-    try {
-      await fetch(`/api/user/${ id }`, {
-        method: 'DELETE',
-        headers,
-      })
-    } catch (error) {
-      console.error(error)
-    }
-
-    setRequestInProgress(false)
+  const onDelete: ReactEventHandler = async e => {
+    e.preventDefault()
+    await doFetch()
     deleteCallback()
   }
 
@@ -39,8 +26,8 @@ const DeleteButton = ({ params, csrfToken, deleteCallback }: DeleteButtonProps) 
       variant="outlined"
       size="small"
       startIcon={<DeleteOutlinedIcon />} sx={{ ml: 1 }}
-      onClick={() => onDelete(params.getValue(params.id, 'id') as string) }
-      loading={ requestInProgress }
+      onClick={ onDelete }
+      loading={ isLoading }
     >Delete</LoadingButton>
   )
 }
