@@ -14,7 +14,7 @@ export default function prettyDate(value: Date) {
   } else if (difference < (60 * 60 * 24 * 7)) {
     return `${ Math.round(difference / 60 / 60 / 24) } days ago`
   } else if (difference < (60 * 60 * 24 * 7 * 30)) {
-    return `${ Math.round(difference / 60 / 60 / 24 / 7) } months ago`
+    return `${ Math.round(difference / 60 / 60 / 24 / 7) } weeks ago`
   } else {
     return value.toLocaleString()
   }
