@@ -16,7 +16,6 @@ export const withCSRFToken = (
       result.props.csrfToken = csrfToken
     }
 
-    console.log(result)
     return result
   }
 }
