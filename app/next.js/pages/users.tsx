@@ -11,19 +11,16 @@ import prettyDate from '../utils/prettyDate'
 import ContentCopyOutlinedIcon from '@mui/icons-material/ContentCopyOutlined'
 import copyToClipboard from '../utils/copyToClipboard'
 import DeleteButton from '../components/DeleteButton'
-import { generateCSRFToken } from '../utils/csrf'
+import { withCSRFToken } from '../utils/withCSRFToken'
 
-export const getServerSideProps: GetServerSideProps = async ({ req }) => {
+export const getServerSideProps: GetServerSideProps = withCSRFToken(async () => {
   const props: { [key: string]: any } = {}
 
   const users = await userService.findAll()
   props.ssrUsers = users
 
-  const csrfToken = generateCSRFToken(req)
-  if (csrfToken) props.csrfToken = csrfToken
-
   return { props }
-}
+})
 
 const Home: NextPage = ({ ssrUsers }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const [ users, usersRefreshInProgress, refreshUsers ] = useUsers(ssrUsers)
