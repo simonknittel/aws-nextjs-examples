@@ -26,7 +26,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
 }
 
 const Home: NextPage = ({ ssrUsers, csrfToken }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
-  const [ users, usersRefreshInProgress, refreshUsers ] = useUsers(ssrUsers, { url: '/api/user' })
+  const [ users, usersRefreshInProgress, refreshUsers ] = useUsers(ssrUsers)
 
   const dataGridColumns: GridColDef[] = [
     {

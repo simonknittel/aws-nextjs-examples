@@ -1,11 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { User } from '../services/interfaces/user'
 
-interface Options {
-  url: string
-}
-
-const useUsers = (initialData: User[] = [], options: Options): [ User[], boolean, () => Promise<void> ] => {
+const useUsers = (initialData: User[] = []): [ User[], boolean, () => Promise<void> ] => {
   const [ data, setData ] = useState(initialData)
   const [ refreshInProgress, setRefreshInProgress ] = useState(false)
 
@@ -13,7 +9,7 @@ const useUsers = (initialData: User[] = [], options: Options): [ User[], boolean
     setRefreshInProgress(true)
 
     try {
-      const res = await fetch(options.url)
+      const res = await fetch('/api/users')
       const json = await res.json();
       setData(json)
     } catch (error) {
@@ -21,7 +17,7 @@ const useUsers = (initialData: User[] = [], options: Options): [ User[], boolean
     }
 
     setRefreshInProgress(false)
-  }, [ options.url ])
+  }, [])
 
   useEffect(() => {
     const interval = setInterval(() => {

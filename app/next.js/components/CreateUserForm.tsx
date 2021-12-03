@@ -2,7 +2,7 @@ import { TextField } from '@mui/material'
 import LoadingButton from '@mui/lab/LoadingButton'
 import { ReactEventHandler, useState } from 'react'
 import { SendOutlined } from '@mui/icons-material'
-import useAPI from '../hooks/useAPI'
+import useUsersCreate from '../hooks/useUsersCreate'
 
 const CreateUserForm = ({ submitCallback, csrfToken }: { submitCallback: any, csrfToken: string }) => {
   const [ name, setName ] = useState('')
@@ -11,17 +11,11 @@ const CreateUserForm = ({ submitCallback, csrfToken }: { submitCallback: any, cs
     setName('')
   }
 
-  const [ data, isLoading, doFetch ] = useAPI('/user', {
-    body: JSON.stringify({
-      name
-    }),
-    method: 'POST',
-    csrfToken
-  })
+  const [ isLoading, doCreate ] = useUsersCreate({ name }, csrfToken)
 
   const onSubmit: ReactEventHandler =  async e => {
     e.preventDefault()
-    await doFetch()
+    await doCreate()
     onReset()
     submitCallback()
   }
