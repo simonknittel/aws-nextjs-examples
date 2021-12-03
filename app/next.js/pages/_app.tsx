@@ -1,18 +1,15 @@
 import './_app.css'
 import type { AppProps } from 'next/app'
 import Layout from '../components/Layout'
-import { CSRFContext } from '../contexts/CsrfContext'
-import { useState } from 'react'
+import { CSRFContextProvider } from '../contexts/CSRFContext'
 
 function MyApp({ Component, pageProps }: AppProps) {
-  const [ csrfToken ] = useState(pageProps.csrfToken)
-
   return (
-    <CSRFContext.Provider value={ csrfToken }>
+    <CSRFContextProvider pageProps={ pageProps }>
       <Layout>
         <Component { ...pageProps } />
       </Layout>
-    </CSRFContext.Provider>
+    </CSRFContextProvider>
   )
 }
 
