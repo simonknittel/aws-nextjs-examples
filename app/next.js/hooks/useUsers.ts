@@ -9,7 +9,7 @@ const useUsers = (initialData: User[] = []): [ User[], boolean, () => Promise<vo
     setRefreshInProgress(true)
 
     try {
-      const res = await fetch('/api/users')
+      const res = await fetch('/api/user')
       const json = await res.json();
       setData(json)
     } catch (error) {
