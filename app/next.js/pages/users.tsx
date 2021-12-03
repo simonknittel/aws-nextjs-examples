@@ -25,7 +25,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   return { props }
 }
 
-const Home: NextPage = ({ ssrUsers, csrfToken }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+const Home: NextPage = ({ ssrUsers }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const [ users, usersRefreshInProgress, refreshUsers ] = useUsers(ssrUsers)
 
   const dataGridColumns: GridColDef[] = [
@@ -86,7 +86,6 @@ const Home: NextPage = ({ ssrUsers, csrfToken }: InferGetServerSidePropsType<typ
 
         <DeleteButton
           params={ params }
-          csrfToken={ csrfToken }
           deleteCallback={ refreshUsers }
         />
       </>),
@@ -119,7 +118,7 @@ const Home: NextPage = ({ ssrUsers, csrfToken }: InferGetServerSidePropsType<typ
         </Typography>
 
         <Box pt={ 2  }>
-          <CreateUserForm submitCallback={ refreshUsers } csrfToken={ csrfToken } />
+          <CreateUserForm submitCallback={ refreshUsers } />
         </Box>
 
         <Box pt={ 4 }>

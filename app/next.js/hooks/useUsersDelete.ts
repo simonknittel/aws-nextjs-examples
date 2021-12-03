@@ -1,7 +1,11 @@
+import { useContext } from 'react'
+import { CSRFContext } from '../contexts/CsrfContext'
 import { DeleteItem } from '../services/interfaces/user'
 import useAPI from './useAPI'
 
-const useUsersDelete = (id: DeleteItem, csrfToken: string): [ boolean, () => Promise<void> ] => {
+const useUsersDelete = (id: DeleteItem): [ boolean, () => Promise<void> ] => {
+  const csrfToken = useContext(CSRFContext)
+
   const [ data, isLoading, doFetch ] = useAPI(`/user/${ id }`, {
     method: 'DELETE',
     csrfToken,

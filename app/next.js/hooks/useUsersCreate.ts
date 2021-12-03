@@ -1,7 +1,11 @@
+import { useContext } from 'react'
+import { CSRFContext } from '../contexts/CsrfContext'
 import { CreateItem } from '../services/interfaces/user'
 import useAPI from './useAPI'
 
-const useUsersCreate = ({ name }: CreateItem, csrfToken: string): [ boolean, () => Promise<void> ] => {
+const useUsersCreate = ({ name }: CreateItem): [ boolean, () => Promise<void> ] => {
+  const csrfToken = useContext(CSRFContext)
+
   const [ data, isLoading, doFetch ] =  useAPI('/user', {
     body: JSON.stringify({
       name

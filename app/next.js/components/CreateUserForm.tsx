@@ -1,17 +1,17 @@
 import { TextField } from '@mui/material'
 import LoadingButton from '@mui/lab/LoadingButton'
-import { ReactEventHandler, useState } from 'react'
+import { ReactEventHandler, useContext, useState } from 'react'
 import { SendOutlined } from '@mui/icons-material'
 import useUsersCreate from '../hooks/useUsersCreate'
 
-const CreateUserForm = ({ submitCallback, csrfToken }: { submitCallback: any, csrfToken: string }) => {
+const CreateUserForm = ({ submitCallback }: { submitCallback: any }) => {
   const [ name, setName ] = useState('')
 
   const onReset = () => {
     setName('')
   }
 
-  const [ isLoading, doCreate ] = useUsersCreate({ name }, csrfToken)
+  const [ isLoading, doCreate ] = useUsersCreate({ name })
 
   const onSubmit: ReactEventHandler =  async e => {
     e.preventDefault()

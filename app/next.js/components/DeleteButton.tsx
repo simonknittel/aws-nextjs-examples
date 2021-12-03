@@ -1,16 +1,16 @@
 import { LoadingButton } from '@mui/lab'
-import React, { ReactEventHandler } from 'react'
+import React, { ReactEventHandler, useContext } from 'react'
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined'
 import useUsersDelete from '../hooks/useUsersDelete'
+import { CSRFContext } from '../contexts/CsrfContext'
 
 interface DeleteButtonProps {
   params: any;
-  csrfToken: string;
   deleteCallback(): any;
 }
 
-const DeleteButton = ({ params, csrfToken, deleteCallback }: DeleteButtonProps) => {
-  const [ isLoading, doDelete ] = useUsersDelete(params.id, csrfToken)
+const DeleteButton = ({ params, deleteCallback }: DeleteButtonProps) => {
+  const [ isLoading, doDelete ] = useUsersDelete(params.id)
 
   const onDelete: ReactEventHandler = async e => {
     e.preventDefault()
