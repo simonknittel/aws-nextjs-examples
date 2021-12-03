@@ -1,6 +1,6 @@
 import { createHmac } from 'crypto'
 import { IncomingMessage } from 'http'
-import { NextApiRequest, NextApiResponse } from 'next'
+import { GetServerSidePropsContext, GetServerSidePropsResult, NextApiRequest, NextApiResponse } from 'next'
 import { NextHandler } from 'next-connect'
 import { NextApiRequestCookies } from 'next/dist/server/api-utils'
 
@@ -61,4 +61,23 @@ function generateHmac(payload: string) {
   return createHmac('sha512', process.env.CSRF_SECRET as string)
     .update(payload)
     .digest('hex')
+}
+
+export const withCSRFToken = (
+  handler: (context: GetServerSidePropsContext) => GetServerSidePropsResult<{ [key: string]: any }> | Promise<GetServerSidePropsResult<{ [key: string]: any }>>
+) => {
+  return async (context: GetServerSidePropsContext) => {
+    const result = await handler(context)
+
+    const csrfToken = generateCSRFToken(context.req)
+    // @TODO: Fix types
+    if (csrfToken) {
+      // @ts-ignore
+      if (!result.props) result.props = {}
+      // @ts-ignore
+      result.props.csrfToken = csrfToken
+    }
+
+    return result
+  }
 }

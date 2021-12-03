@@ -1,8 +1,7 @@
 import { LoadingButton } from '@mui/lab'
-import React, { ReactEventHandler, useContext } from 'react'
+import React, { ReactEventHandler } from 'react'
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined'
 import useUsersDelete from '../hooks/useUsersDelete'
-import { CSRFContext } from '../contexts/CSRFContext'
 
 interface DeleteButtonProps {
   params: any;

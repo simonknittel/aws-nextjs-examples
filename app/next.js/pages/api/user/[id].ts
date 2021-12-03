@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { userService } from '../../../services/user'
 import nc from 'next-connect'
-import { validateCSRFRequest } from '../../../utils/csrf'
+import { validateCSRFRequest } from '../../../modules/csrf/utils'
 import { bodyValidation } from '../../../utils/bodyValidation'
 
 const patchSchema = {

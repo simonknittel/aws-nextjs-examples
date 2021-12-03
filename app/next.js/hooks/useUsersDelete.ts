@@ -1,5 +1,5 @@
 import { useContext } from 'react'
-import { CSRFContext } from '../contexts/CSRFContext'
+import { CSRFContext } from '../modules/csrf/context'
 import { DeleteItem } from '../services/interfaces/user'
 import useAPI from './useAPI'
 
