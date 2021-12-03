@@ -3,19 +3,13 @@ import { userService } from '../../../services/user'
 import nc from 'next-connect'
 import { validateCSRFRequest } from '../../../modules/csrf/utils'
 import { bodyValidation } from '../../../utils/bodyValidation'
-
-const patchSchema = {
-  type: 'object',
-  properties: {
-    name: { type: 'string' },
-  },
-  minProperties: 1,
-  additionalProperties: false,
-}
+import { patchSchema } from './schemas'
+import { uuidValidation } from '../../../utils/uuidValidation'
 
 const handler = nc({
   onNoMatch: notAllowed
 })
+  .use(uuidValidation())
   .patch(validateCSRFRequest(), bodyValidation(patchSchema), patchHandler)
   .delete(validateCSRFRequest(), deleteHandler)
 

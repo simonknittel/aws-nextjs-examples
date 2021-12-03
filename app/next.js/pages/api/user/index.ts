@@ -3,15 +3,7 @@ import { userService } from '../../../services/user'
 import nc from 'next-connect'
 import { validateCSRFRequest } from '../../../modules/csrf/utils'
 import { bodyValidation } from '../../../utils/bodyValidation'
-
-const postSchema = {
-  type: 'object',
-  properties: {
-    name: { type: 'string' },
-  },
-  required: [ 'name' ],
-  additionalProperties: false,
-}
+import { postSchema } from './schemas'
 
 const handler = nc({
   onNoMatch: notAllowed

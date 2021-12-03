@@ -16,7 +16,7 @@ export function bodyValidation(schema: any) {
     if (!valid) {
       return res
         .status(400)
-        .end()
+        .json({ error: { message: 'Invalid request body' }})
     }
 
     return next()
