@@ -11,7 +11,7 @@ import prettyDate from '../utils/prettyDate'
 import ContentCopyOutlinedIcon from '@mui/icons-material/ContentCopyOutlined'
 import copyToClipboard from '../utils/copyToClipboard'
 import DeleteButton from '../components/DeleteButton'
-import { withCSRFToken } from '../modules/csrf/utils'
+import { withCSRFToken } from '../modules/csrf'
 
 export const getServerSideProps: GetServerSideProps = withCSRFToken(async () => {
   const props: { [key: string]: any } = {}
