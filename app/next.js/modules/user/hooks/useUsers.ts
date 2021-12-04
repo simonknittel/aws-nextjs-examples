@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import { User } from '../services/interfaces/user'
+import { User } from '../types'
 
 const useUsers = (initialData: User[] = []): [ User[], boolean, () => Promise<void> ] => {
   const [ data, setData ] = useState(initialData)

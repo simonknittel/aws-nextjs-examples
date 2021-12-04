@@ -1,7 +1,7 @@
 import { useContext } from 'react'
-import { CSRFContext } from '../modules/csrf/context'
-import { DeleteItem } from '../services/interfaces/user'
-import useAPI from './useAPI'
+import { CSRFContext } from '../../csrf/context'
+import { DeleteItem } from '../types'
+import useAPI from '../../../hooks/useAPI'
 
 const useUsersDelete = (id: DeleteItem): [ boolean, () => Promise<void> ] => {
   const csrfToken = useContext(CSRFContext)

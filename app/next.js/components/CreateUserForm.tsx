@@ -2,7 +2,7 @@ import { TextField } from '@mui/material'
 import LoadingButton from '@mui/lab/LoadingButton'
 import { ReactEventHandler, useContext, useState } from 'react'
 import { SendOutlined } from '@mui/icons-material'
-import useUsersCreate from '../hooks/useUsersCreate'
+import useUsersCreate from '../modules/user/hooks/useUsersCreate'
 
 const CreateUserForm = ({ submitCallback }: { submitCallback: any }) => {
   const [ name, setName ] = useState('')

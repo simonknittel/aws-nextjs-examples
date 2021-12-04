@@ -1,7 +1,7 @@
 import { useContext } from 'react'
-import { CSRFContext } from '../modules/csrf/context'
-import { CreateItem } from '../services/interfaces/user'
-import useAPI from './useAPI'
+import { CSRFContext } from '../../csrf/context'
+import { CreateItem } from '../types'
+import useAPI from '../../../hooks/useAPI'
 
 const useUsersCreate = ({ name }: CreateItem): [ boolean, () => Promise<void> ] => {
   const csrfToken = useContext(CSRFContext)

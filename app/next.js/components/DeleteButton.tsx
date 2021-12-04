@@ -1,7 +1,7 @@
 import { LoadingButton } from '@mui/lab'
 import React, { ReactEventHandler } from 'react'
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined'
-import useUsersDelete from '../hooks/useUsersDelete'
+import useUsersDelete from '../modules/user/hooks/useUsersDelete'
 
 interface DeleteButtonProps {
   params: any;

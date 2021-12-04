@@ -1,7 +1,7 @@
 import { BatchGetItemCommand, BatchGetItemCommandInput, BatchWriteItemCommand, BatchWriteItemCommandInput, ScanCommand, ScanCommandInput, UpdateItemCommand, UpdateItemCommandInput, WriteRequest } from '@aws-sdk/client-dynamodb'
-import { ddbClient } from './dynamodb'
+import { ddbClient } from '../../utils/ddbClient'
 import { v4 as uuidv4 } from 'uuid'
-import { CreateItem, DeleteItem, UserServiceInterface, User, PatchItem } from './interfaces/user'
+import { CreateItem, DeleteItem, UserServiceInterface, User, PatchItem } from './types'
 
 class UserService implements UserServiceInterface {
   private TABLE_NAME = 'User'
