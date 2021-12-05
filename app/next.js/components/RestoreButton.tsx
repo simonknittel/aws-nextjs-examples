@@ -20,7 +20,7 @@ const RestoreButton = ({ params, callback, ...other }: Props) => {
 
   return (
     <LoadingButton
-      variant="contained"
+      variant="outlined"
       size="small"
       startIcon={<RestoreFromTrashOutlinedIcon />}
       onClick={ onClick }

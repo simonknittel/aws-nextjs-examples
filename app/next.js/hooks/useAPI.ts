@@ -1,11 +1,11 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useContext, useState } from 'react'
+import { CSRFContext } from '../modules/csrf'
 
-interface Options extends RequestInit {
-  csrfToken?: string
-}
+interface Options extends RequestInit {}
 
 // @TODO: Implement error handling
 const useAPI = (url: string, options: Options): [ any, boolean, () => Promise<void> ] => {
+  const csrfToken = useContext(CSRFContext)
   const [ data, setData ] = useState()
   const [ isLoading, setIsLoading ] = useState(false)
 
@@ -20,12 +20,8 @@ const useAPI = (url: string, options: Options): [ any, boolean, () => Promise<vo
       setHeader(init.headers, 'Content-Type', 'application/json; charset=utf-8')
     }
 
-    if (init.method && ['POST', 'PATCH', 'DELETE'].includes(init.method) && options.csrfToken) {
-      /**
-       * We can't import the header name from the csrfService.ts file otherwise
-       * the file would be fully included in the client bundle.
-       */
-      setHeader(init.headers, 'X-CSRF-Token', options.csrfToken)
+    if (init.method && ['POST', 'PATCH', 'DELETE'].includes(init.method) && csrfToken) {
+      setHeader(init.headers, 'X-CSRF-Token', csrfToken)
     }
 
     const response = await fetch('/api' + url, init)
@@ -36,7 +32,7 @@ const useAPI = (url: string, options: Options): [ any, boolean, () => Promise<vo
     }
 
     setIsLoading(false)
-  }, [ url, options ])
+  }, [ url, options, csrfToken ])
 
   return [
     data,

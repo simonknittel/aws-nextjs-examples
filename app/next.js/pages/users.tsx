@@ -55,9 +55,12 @@ const Home: NextPage = ({ ssrUsers }: InferGetServerSidePropsType<typeof getServ
       headerName: 'Last edit',
       width: 200,
       type: 'dateTime',
-      valueGetter: ({ value }) => value && new Date(value),
-      renderCell: ({ value }) => {
-        if (!value) return null
+      valueGetter: ({ value, row }) => {
+        if (!value) return new Date(row.creationDate)
+        return new Date(value)
+      },
+      renderCell: ({ value, row }) => {
+        if (!row.lastEditDate) return ''
         return (
           <time dateTime={ value.toISOString() } title={ value.toLocaleString() }>{ prettyDate(value) }</time>
         )
