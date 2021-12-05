@@ -4,7 +4,7 @@ import { userService } from '../modules/user/service'
 import React, { useState } from 'react'
 import CreateUserForm from '../components/CreateUserForm'
 import { DataGrid, GridColDef, GridRowsProp, GridSortDirection } from '@mui/x-data-grid'
-import { Box, Button, IconButton, Stack, Typography } from '@mui/material'
+import { Accordion, AccordionDetails, AccordionSummary, Box, Button, IconButton, Stack, Typography } from '@mui/material'
 import CreateOutlinedIcon from '@mui/icons-material/CreateOutlined'
 import { useUsers } from '../modules/user/client'
 import prettyDate from '../utils/prettyDate'
@@ -121,7 +121,8 @@ const Home: NextPage = ({ ssrUsers }: InferGetServerSidePropsType<typeof getServ
     },
   ]
 
-  const dataGridRows: GridRowsProp = users
+  const dataGridRows: GridRowsProp = users.filter(user => !user.archivedDate)
+  const dataGridRowsArchived: GridRowsProp = users.filter(user => user.archivedDate)
 
   const [ sortModel, setSortModel ] = useState([
     {
@@ -134,6 +135,8 @@ const Home: NextPage = ({ ssrUsers }: InferGetServerSidePropsType<typeof getServ
     },
   ])
 
+  const [ showArchivedUsers, setShowArchivedUsers ] = useState(false)
+
   return (
     <>
       <Head>
@@ -145,7 +148,7 @@ const Home: NextPage = ({ ssrUsers }: InferGetServerSidePropsType<typeof getServ
           Users
         </Typography>
 
-        <Box pt={ 2  }>
+        <Box pt={ 2 }>
           <CreateUserForm submitCallback={ refreshUsers } />
         </Box>
 
@@ -159,6 +162,29 @@ const Home: NextPage = ({ ssrUsers }: InferGetServerSidePropsType<typeof getServ
             sortModel={ sortModel }
             onSortModelChange={ model => setSortModel(model) }
           />
+        </Box>
+
+        <Box pt={ 4 }>
+          {/* @TODO: Customize https://mui.com/components/accordion/#customization */}
+          <Accordion expanded={ showArchivedUsers } onChange={ () => setShowArchivedUsers(!showArchivedUsers) }>
+            <AccordionSummary aria-controls="archived-users-content" id="archived-users-header">
+              <Typography variant="h5" component="h2">
+                Archived users
+              </Typography>
+            </AccordionSummary>
+
+            <AccordionDetails>
+              <DataGrid
+                columns={ dataGridColumns }
+                rows={ dataGridRowsArchived }
+                autoHeight
+                loading={ usersRefreshInProgress }
+                isRowSelectable={ () => false }
+                sortModel={ sortModel }
+                onSortModelChange={ model => setSortModel(model) }
+              />
+            </AccordionDetails>
+          </Accordion>
         </Box>
       </main>
     </>

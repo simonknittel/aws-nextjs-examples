@@ -27,3 +27,11 @@ Content-Type: application/json
 ###
 
 DELETE http://localhost:3000/api/user/68776039-a568-49c1-9f95-68de56da0c7d
+
+###
+
+PATCH http://localhost:3000/api/user/68776039-a568-49c1-9f95-68de56da0c7d/archive
+
+###
+
+PATCH http://localhost:3000/api/user/68776039-a568-49c1-9f95-68de56da0c7d/restore
