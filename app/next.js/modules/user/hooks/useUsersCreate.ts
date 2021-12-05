@@ -3,7 +3,7 @@ import { CSRFContext } from '../../csrf'
 import { CreateItem } from '../types'
 import useAPI from '../../../hooks/useAPI'
 
-const useUsersCreate = ({ name }: CreateItem): [ boolean, () => Promise<void> ] => {
+export const useUsersCreate = ({ name }: CreateItem): [ boolean, () => Promise<void> ] => {
   const csrfToken = useContext(CSRFContext)
 
   const [ data, isLoading, doFetch ] =  useAPI('/user', {
@@ -16,5 +16,3 @@ const useUsersCreate = ({ name }: CreateItem): [ boolean, () => Promise<void> ] 
 
   return [ isLoading, doFetch ]
 }
-
-export default useUsersCreate

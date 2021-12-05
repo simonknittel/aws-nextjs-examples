@@ -6,12 +6,14 @@ import CreateUserForm from '../components/CreateUserForm'
 import { DataGrid, GridColDef, GridRowsProp, GridSortDirection } from '@mui/x-data-grid'
 import { Box, Button, IconButton, Stack, Typography } from '@mui/material'
 import CreateOutlinedIcon from '@mui/icons-material/CreateOutlined'
-import useUsers from '../modules/user/hooks/useUsers'
+import { useUsers } from '../modules/user/client'
 import prettyDate from '../utils/prettyDate'
 import ContentCopyOutlinedIcon from '@mui/icons-material/ContentCopyOutlined'
 import copyToClipboard from '../utils/copyToClipboard'
 import DeleteButton from '../components/DeleteButton'
 import { withCSRFToken } from '../modules/csrf'
+import ArchiveButton from '../components/ArchiveButton'
+import RestoreButton from '../components/RestoreButton'
 
 export const getServerSideProps: GetServerSideProps = withCSRFToken(async () => {
   const props: { [key: string]: any } = {}
@@ -51,7 +53,7 @@ const Home: NextPage = ({ ssrUsers }: InferGetServerSidePropsType<typeof getServ
     {
       field: 'lastEditDate',
       headerName: 'Last edit',
-      width: 250,
+      width: 200,
       type: 'dateTime',
       valueGetter: ({ value }) => value && new Date(value),
       renderCell: ({ value }) => {
@@ -64,7 +66,7 @@ const Home: NextPage = ({ ssrUsers }: InferGetServerSidePropsType<typeof getServ
     {
       field: 'creationDate',
       headerName: 'Creation',
-      width: 250,
+      width: 200,
       type: 'dateTime',
       valueGetter: ({ value }) => value && new Date(value),
       renderCell: ({ value }) => (
@@ -72,19 +74,48 @@ const Home: NextPage = ({ ssrUsers }: InferGetServerSidePropsType<typeof getServ
       ),
     },
     {
+      field: 'archivedDate',
+      headerName: 'Archived',
+      width: 200,
+      type: 'dateTime',
+      valueGetter: ({ value }) => value && new Date(value),
+      renderCell: ({ value }) => {
+        if (!value) return null
+        return (
+          <time dateTime={ value.toISOString() } title={ value.toLocaleString() }>{ prettyDate(value) }</time>
+        )
+      },
+    },
+    {
       field: 'actions',
       headerName: 'Actions',
       renderCell: (params) => (<>
-        <Button
-          variant="contained"
-          size="small"
-          startIcon={<CreateOutlinedIcon />}
-        >Edit</Button>
+        { params.row.archivedDate && <>
+          <RestoreButton
+            params={ params }
+            callback={ refreshUsers }
+          />
 
-        <DeleteButton
-          params={ params }
-          deleteCallback={ refreshUsers }
-        />
+          <DeleteButton
+            params={ params }
+            callback={ refreshUsers }
+            sx={{ ml: 1 }}
+          />
+        </> }
+
+        { !params.row.archivedDate && <>
+          <Button
+            variant="contained"
+            size="small"
+            startIcon={<CreateOutlinedIcon />}
+          >Edit</Button>
+
+          <ArchiveButton
+            params={ params }
+            callback={ refreshUsers }
+            sx={{ ml: 1 }}
+          />
+        </> }
       </>),
       flex: 1,
     },

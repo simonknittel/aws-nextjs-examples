@@ -12,6 +12,7 @@ class UserService implements UserServiceInterface {
     'CreationDate', // N
     'Creator', // S
     'LastEditDate', // N
+    'ArchivedDate', // N
   ]
 
   public async create(items: CreateItem[]) {
@@ -69,7 +70,7 @@ class UserService implements UserServiceInterface {
   public async findById(ids: User['id'][]): Promise<User[]> {
     const keys = ids.map(id => {
       return {
-        Id: { S: id }
+        Id: { S: id },
       }
     })
 
@@ -94,18 +95,30 @@ class UserService implements UserServiceInterface {
   }
 
   public async update(id: User['id'], patch: PatchItem) {
-    let updateExpression: UpdateItemCommandInput['UpdateExpression'] = ''
+    let setExpression: UpdateItemCommandInput['UpdateExpression'] = ''
+    let removeExpression: UpdateItemCommandInput['UpdateExpression'] = ''
     const attributeNames: UpdateItemCommandInput['ExpressionAttributeNames'] = {}
     const attributeValues: UpdateItemCommandInput['ExpressionAttributeValues'] = {}
 
-    updateExpression += `#a = :a`
+    setExpression += `#a = :a`
     attributeNames['#a'] = 'LastEditDate'
     attributeValues[':a'] = { N: Date.now().toString() }
 
     if (patch.name) {
-      updateExpression += `, #b = :b`
+      setExpression += `, #b = :b`
       attributeNames['#b'] = 'Name'
       attributeValues[':b'] = { S: patch.name }
+    }
+
+    if (typeof patch.archivedDate === 'string') {
+      setExpression += `, #c = :c`
+      attributeNames['#c'] = 'ArchivedDate'
+      attributeValues[':c'] = { N: patch.archivedDate }
+    }
+
+    if (patch.archivedDate === null) {
+      removeExpression += '#d'
+      attributeNames['#d'] = 'ArchivedDate'
     }
 
     const input: UpdateItemCommandInput = {
@@ -113,7 +126,7 @@ class UserService implements UserServiceInterface {
       Key: {
         Id: { S: id },
       },
-      UpdateExpression: `SET ${ updateExpression }`,
+      UpdateExpression: `SET ${ setExpression } ${ removeExpression ? 'REMOVE ' + removeExpression : '' }`,
       ExpressionAttributeNames: attributeNames,
       ExpressionAttributeValues: attributeValues,
     }
@@ -164,6 +177,7 @@ class UserService implements UserServiceInterface {
 
     if (user.Creator?.S) rtn.creator = user.Creator.S
     if (user.LastEditDate?.N) rtn.lastEditDate = parseInt(user.LastEditDate.N)
+    if (user.ArchivedDate?.N) rtn.archivedDate = parseInt(user.ArchivedDate.N)
 
     return rtn
   }

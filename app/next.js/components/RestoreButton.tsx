@@ -1,7 +1,7 @@
 import { LoadingButton } from '@mui/lab'
 import React, { ReactEventHandler } from 'react'
-import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined'
-import { useUsersDelete } from '../modules/user/client'
+import RestoreFromTrashOutlinedIcon from '@mui/icons-material/RestoreFromTrashOutlined'
+import { useUsersRestore } from '../modules/user/client'
 
 interface Props {
   params: any;
@@ -9,25 +9,25 @@ interface Props {
   [key: string]: any; // @TODO: Properly extend LoadingButton's props
 }
 
-const DeleteButton = ({ params, callback, ...other }: Props) => {
-  const [ isLoading, doDelete ] = useUsersDelete(params.id)
+const RestoreButton = ({ params, callback, ...other }: Props) => {
+  const [ isLoading, doRestore ] = useUsersRestore(params.id)
 
   const onClick: ReactEventHandler = async e => {
     e.preventDefault()
-    await doDelete()
+    await doRestore()
     callback()
   }
 
   return (
     <LoadingButton
-      variant="outlined"
+      variant="contained"
       size="small"
-      startIcon={<DeleteOutlinedIcon />}
+      startIcon={<RestoreFromTrashOutlinedIcon />}
       onClick={ onClick }
       loading={ isLoading }
       { ...other }
-    >Delete</LoadingButton>
+    >Restore</LoadingButton>
   )
 }
 
-export default DeleteButton
+export default RestoreButton

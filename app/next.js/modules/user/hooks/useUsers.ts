@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { User } from '../types'
 
-const useUsers = (initialData: User[] = []): [ User[], boolean, () => Promise<void> ] => {
+export const useUsers = (initialData: User[] = []): [ User[], boolean, () => Promise<void> ] => {
   const [ data, setData ] = useState(initialData)
   const [ refreshInProgress, setRefreshInProgress ] = useState(false)
 
@@ -33,5 +33,3 @@ const useUsers = (initialData: User[] = []): [ User[], boolean, () => Promise<vo
     refresh
   ]
 }
-
-export default useUsers

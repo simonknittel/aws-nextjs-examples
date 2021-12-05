@@ -1,13 +1,13 @@
 import { useContext } from 'react'
 import { CSRFContext } from '../../csrf'
-import { DeleteItem } from '../types'
 import useAPI from '../../../hooks/useAPI'
+import { User } from '../types'
 
-export const useUsersDelete = (id: DeleteItem): [ boolean, () => Promise<void> ] => {
+export const useUsersRestore = (id: User['id']): [ boolean, () => Promise<void> ] => {
   const csrfToken = useContext(CSRFContext)
 
-  const [ data, isLoading, doFetch ] = useAPI(`/user/${ id }`, {
-    method: 'DELETE',
+  const [ data, isLoading, doFetch ] = useAPI(`/user/${ id }/restore`, {
+    method: 'PATCH',
     csrfToken,
   })
 

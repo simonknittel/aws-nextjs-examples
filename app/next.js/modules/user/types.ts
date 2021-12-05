@@ -4,6 +4,7 @@ export interface User {
   creationDate: number;
   creator?: string;
   lastEditDate?: number;
+  archivedDate?: number;
 }
 
 export interface CreateItem {
@@ -12,6 +13,7 @@ export interface CreateItem {
 
 export interface PatchItem {
   name?: User['name'];
+  archivedDate?: string | null;
 }
 
 export interface DeleteItem {
