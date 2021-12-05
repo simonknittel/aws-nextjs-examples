@@ -1,7 +1,7 @@
 import { LoadingButton } from '@mui/lab'
 import React, { ReactEventHandler } from 'react'
 import ArchiveOutlinedIcon from '@mui/icons-material/ArchiveOutlined'
-import { useUsersArchive } from '../modules/user/client'
+import { useUserArchive } from '../modules/user/client'
 
 interface Props {
   params: any;
@@ -10,7 +10,7 @@ interface Props {
 }
 
 const ArchiveButton = ({ params, callback, ...other }: Props) => {
-  const [ isLoading, doArchive ] = useUsersArchive(params.id)
+  const [ isLoading, doArchive ] = useUserArchive(params.id)
 
   const onClick: ReactEventHandler = async e => {
     e.preventDefault()

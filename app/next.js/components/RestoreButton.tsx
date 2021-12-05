@@ -1,7 +1,7 @@
 import { LoadingButton } from '@mui/lab'
 import React, { ReactEventHandler } from 'react'
 import RestoreFromTrashOutlinedIcon from '@mui/icons-material/RestoreFromTrashOutlined'
-import { useUsersRestore } from '../modules/user/client'
+import { useUserRestore } from '../modules/user/client'
 
 interface Props {
   params: any;
@@ -10,7 +10,7 @@ interface Props {
 }
 
 const RestoreButton = ({ params, callback, ...other }: Props) => {
-  const [ isLoading, doRestore ] = useUsersRestore(params.id)
+  const [ isLoading, doRestore ] = useUserRestore(params.id)
 
   const onClick: ReactEventHandler = async e => {
     e.preventDefault()

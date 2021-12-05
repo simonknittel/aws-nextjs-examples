@@ -6,7 +6,7 @@ import CreateUserForm from '../components/CreateUserForm'
 import { DataGrid, GridColDef, GridRowsProp, GridSortDirection } from '@mui/x-data-grid'
 import { Accordion, AccordionDetails, AccordionSummary, Box, Button, IconButton, Stack, Typography } from '@mui/material'
 import CreateOutlinedIcon from '@mui/icons-material/CreateOutlined'
-import { useUsers } from '../modules/user/client'
+import { useUserGetAll } from '../modules/user/client'
 import prettyDate from '../utils/prettyDate'
 import ContentCopyOutlinedIcon from '@mui/icons-material/ContentCopyOutlined'
 import copyToClipboard from '../utils/copyToClipboard'
@@ -16,6 +16,14 @@ import ArchiveButton from '../components/ArchiveButton'
 import RestoreButton from '../components/RestoreButton'
 
 export const getServerSideProps: GetServerSideProps = withCSRFToken(async () => {
+  // @TODO: Implement welcome steps for new users
+  // if (true) {
+  //   return { redirect: {
+  //     destination: '/welcome?redirect=/users',
+  //     permanent: false,
+  //   } }
+  // }
+
   const props: { [key: string]: any } = {}
 
   const users = await userService.findAll()
@@ -25,7 +33,7 @@ export const getServerSideProps: GetServerSideProps = withCSRFToken(async () => 
 })
 
 const Home: NextPage = ({ ssrUsers }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
-  const [ users, usersRefreshInProgress, refreshUsers ] = useUsers(ssrUsers)
+  const [ users, usersRefreshInProgress, refreshUsers ] = useUserGetAll(ssrUsers)
 
   const dataGridColumns: GridColDef[] = [
     {
