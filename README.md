@@ -33,6 +33,7 @@ Minimal containerized web application with database and authentication hosted on
 
     ```sh
     aws dynamodb create-table --table-name User --billing-mode PAY_PER_REQUEST --attribute-definitions AttributeName=Id,AttributeType=S --key-schema AttributeName=Id,KeyType=HASH
+    aws dynamodb create-table --table-name IdentityProviderConnection --billing-mode PAY_PER_REQUEST --attribute-definitions AttributeName=Provider,AttributeType=S AttributeName=ProviderId,AttributeType=S --key-schema AttributeName=Provider,KeyType=HASH AttributeName=ProviderId,KeyType=RANGE
     ```
 
 3. Create IAM policy called `aws-service`
@@ -50,9 +51,13 @@ Minimal containerized web application with database and authentication hosted on
                     "dynamodb:PutItem",
                     "dynamodb:DeleteItem",
                     "dynamodb:GetItem",
+                    "dynamodb:Scan",
                     "dynamodb:UpdateItem"
                 ],
-                "Resource": "arn:aws:dynamodb:eu-central-1:533499034851:table/User"
+                "Resource": [
+                    "arn:aws:dynamodb:eu-central-1:533499034851:table/User",
+                    "arn:aws:dynamodb:eu-central-1:533499034851:table/IdentityProviderConnection"
+                ]
             }
         ]
     }

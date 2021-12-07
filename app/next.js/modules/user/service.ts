@@ -15,7 +15,7 @@ class UserService implements UserServiceInterface {
     'ArchivedDate', // N
   ]
 
-  public async create(items: CreateItem[]) {
+  public async create(items: CreateItem[]): Promise<User[]> {
     const requests: WriteRequest[] = items.map(item => {
       return {
         PutRequest: {
@@ -38,6 +38,13 @@ class UserService implements UserServiceInterface {
 
     try {
       await ddbClient.send(command)
+      return requests.map(item => {
+        return {
+          id: item.PutRequest!.Item!.Id!.S!,
+          name: item.PutRequest!.Item!.Name!.S!,
+          creationDate: parseInt(item.PutRequest!.Item!.CreationDate!.N!),
+        }
+      })
     } catch (error) {
       console.error(error)
       throw error

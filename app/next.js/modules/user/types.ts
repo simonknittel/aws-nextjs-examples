@@ -21,7 +21,7 @@ export interface DeleteItem {
 }
 
 export interface UserServiceInterface {
-  create(items: CreateItem[]): Promise<void>;
+  create(items: CreateItem[]): Promise<User[]>;
   findAll(): Promise<User[]>;
   findById(ids: User['id'][]): Promise<User[]>;
   update(id: User['id'], patch: PatchItem): Promise<void>;
