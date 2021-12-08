@@ -14,51 +14,16 @@ import DeleteButton from '../components/DeleteButton'
 import { withCSRFToken } from '../modules/csrf'
 import ArchiveButton from '../components/ArchiveButton'
 import RestoreButton from '../components/RestoreButton'
-import { identityProviderService } from '../modules/identityProviderConnection/service'
+import { withAuthentication } from '../utils/withAuthentication'
 
-export const getServerSideProps: GetServerSideProps = withCSRFToken(async ({ req }: GetServerSidePropsContext) => {
-  console.log(req.headers['x-forwarded-user'], req.headers['x-forwarded-email'])
-
-  let providerId
-  if (typeof req.headers['x-forwarded-user'] === 'string') {
-    providerId = req.headers['x-forwarded-user']
-  } else {
-    // @TODO: Do something if x-forwarded-user doesn't exist and then remove the !
-    providerId = req.headers['x-forwarded-user']!.at(-1)!
-  }
-
-  const existingUser = await identityProviderService.findByProviderId([{
-    provider: 'google',
-    providerId: providerId,
-  }])
-
-  if (existingUser.length === 0) {
-    const createdUser = await userService.create([{
-      name: 'foo', // @TODO: Create random name (e.g. Blue Rhino)
-    }])
-
-    await identityProviderService.create([{
-      userId: createdUser[0].id,
-      provider: 'google',
-      providerId: providerId,
-    }])
-
-    return { redirect: {
-      destination: '/welcome?redirect=/users',
-      permanent: false,
-    } }
-  }
-
-
-
-
+export const getServerSideProps: GetServerSideProps = withAuthentication(withCSRFToken(async (context: GetServerSidePropsContext) => {
   const props: { [key: string]: any } = {}
 
   const users = await userService.findAll()
   props.ssrUsers = users
 
   return { props }
-})
+}), { redirect: '/users' })
 
 const Home: NextPage = ({ ssrUsers }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const [ users, usersRefreshInProgress, refreshUsers ] = useUserGetAll(ssrUsers)

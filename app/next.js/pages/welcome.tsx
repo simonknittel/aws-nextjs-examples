@@ -3,18 +3,19 @@ import type { GetServerSideProps, InferGetServerSidePropsType, NextPage } from '
 import Head from 'next/head'
 import React from 'react'
 import { withCSRFToken } from '../modules/csrf'
+import { withAuthentication } from '../utils/withAuthentication'
 
-export const getServerSideProps: GetServerSideProps = withCSRFToken(async () => {
+export const getServerSideProps: GetServerSideProps = withAuthentication(withCSRFToken(async () => {
   const props: { [key: string]: any } = {}
 
   return { props }
-})
+}), { redirect: '/' })
 
 const Welcome: NextPage = ({}: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   return (
     <>
       <Head>
-        <title>aws-service</title>
+        <title>Welcome - aws-service</title>
       </Head>
 
       <main>
