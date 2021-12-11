@@ -12,13 +12,10 @@ export const withAuthentication = (
   options: Options,
 ) => {
   return async (context: GetServerSidePropsContext) => {
-    console.log(context.req.headers['x-forwarded-user'], context.req.headers['x-forwarded-email'])
-
     let providerId
     if (typeof context.req.headers['x-forwarded-user'] === 'string') {
       providerId = context.req.headers['x-forwarded-user']
     } else {
-      // @TODO: Do something if x-forwarded-user doesn't exist and then remove the !
       providerId = context.req.headers['x-forwarded-user']!.at(-1)!
     }
 

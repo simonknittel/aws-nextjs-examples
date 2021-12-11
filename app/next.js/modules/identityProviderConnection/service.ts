@@ -48,7 +48,7 @@ class IdentityProviderConnectionService implements IdentityProviderConnectionSer
     }
   }
 
-  public async findByProviderId(provider: IdentityProviderConnection['provider'], providerId: IdentityProviderConnection['providerId']): Promise<IdentityProviderConnection> {
+  public async findByProviderId(provider: IdentityProviderConnection['provider'], providerId: IdentityProviderConnection['providerId']): Promise<IdentityProviderConnection | null> {
     const input: GetItemCommandInput = {
       TableName: this.TABLE_NAME,
       Key: {
@@ -62,7 +62,8 @@ class IdentityProviderConnectionService implements IdentityProviderConnectionSer
 
     try {
       const response = await ddbClient.send(command)
-      return this.mapper(response.Item!)
+      if (!response.Item) return null
+      return this.mapper(response.Item)
     } catch (error) {
       console.error(error)
       throw error

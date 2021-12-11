@@ -25,7 +25,7 @@ export const getServerSideProps: GetServerSideProps = withAuthentication(withCSR
   return { props }
 }), { redirect: '/users' })
 
-const Home: NextPage = ({ ssrUsers }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+const Home: NextPage = ({ ssrUsers, me }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const [ users, usersRefreshInProgress, refreshUsers ] = useUserGetAll(ssrUsers)
 
   const dataGridColumns: GridColDef[] = [
@@ -33,7 +33,7 @@ const Home: NextPage = ({ ssrUsers }: InferGetServerSidePropsType<typeof getServ
       field: 'id',
       headerName: 'ID',
       width: 400,
-      renderCell: ({ value }) => (
+      renderCell: ({ value, row }) => (
         <Stack
           direction="row"
           justifyContent="space-between"
@@ -93,39 +93,63 @@ const Home: NextPage = ({ ssrUsers }: InferGetServerSidePropsType<typeof getServ
     {
       field: 'actions',
       headerName: 'Actions',
-      renderCell: (params) => (<>
-        { params.row.archivedDate && <>
-          <RestoreButton
-            params={ params }
-            callback={ refreshUsers }
-          />
+      renderCell: (params) => {
+        if (params.row.id === me.user.id) {
+          return (
+            <>
+              <Button
+                variant="contained"
+                size="small"
+                startIcon={<CreateOutlinedIcon />}
+              >Edit</Button>
 
-          <DeleteButton
-            params={ params }
-            callback={ refreshUsers }
-            sx={{ ml: 1 }}
-          />
-        </> }
+              <Typography color="grey.500" sx={{ ml: 1 }} variant="body2">
+                You can&apos;t archive or delete yourself.
+              </Typography>
+            </>
+          )
+        }
 
-        { !params.row.archivedDate && <>
-          <Button
-            variant="contained"
-            size="small"
-            startIcon={<CreateOutlinedIcon />}
-          >Edit</Button>
+        if (params.row.archivedDate) {
+          return (
+            <>
+              <RestoreButton
+                params={ params }
+                callback={ refreshUsers }
+              />
 
-          <ArchiveButton
-            params={ params }
-            callback={ refreshUsers }
-            sx={{ ml: 1 }}
-          />
-        </> }
-      </>),
+              <DeleteButton
+                params={ params }
+                callback={ refreshUsers }
+                sx={{ ml: 1 }}
+              />
+            </>
+          )
+        }
+
+        if (!params.row.archivedDate) {
+          return (
+            <>
+              <Button
+                variant="contained"
+                size="small"
+                startIcon={<CreateOutlinedIcon />}
+              >Edit</Button>
+
+              <ArchiveButton
+                params={ params }
+                callback={ refreshUsers }
+                sx={{ ml: 1 }}
+              />
+            </>
+          )
+        }
+      },
       flex: 1,
     },
   ]
 
-  const dataGridRows: GridRowsProp = users.filter(user => !user.archivedDate) // @TODO: Check for me
+  const dataGridRows: GridRowsProp = users.filter(user => !user.archivedDate)
   const dataGridRowsArchived: GridRowsProp = users.filter(user => user.archivedDate)
 
   const [ sortModel, setSortModel ] = useState([
