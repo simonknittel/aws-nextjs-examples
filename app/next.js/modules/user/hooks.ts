@@ -23,8 +23,8 @@ export const useUserGetAll = (initialData: User[] = []): [ User[], boolean, () =
   }, [])
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      refresh()
+    const interval = setInterval(async () => {
+      await refresh()
     }, 30_000)
 
     return () => clearInterval(interval)
