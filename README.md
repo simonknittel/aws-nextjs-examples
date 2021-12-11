@@ -145,6 +145,15 @@ Minimal containerized web application with database and authentication hosted on
     mkcert -install
     ```
 
+    ```powershell
+    # Windows (WSL2)
+    # 1. Download `.exe` from https://github.com/FiloSottile/mkcert/releases
+    .\mkcert-v1.X.X-windows-amd64.exe -install
+    .\mkcert-v1.X.X-windows-amd64.exe -cert-file localhost.crt -key-file localhost.key localhost
+    # 4. Create `certs` directory in `https_proxy`
+    # 5. Copy `localhost.crt` and `localhost.key` to `certs` directory
+    ```
+
 2. Create certificates
 
     ```sh

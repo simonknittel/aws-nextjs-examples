@@ -22,21 +22,28 @@ export const withAuthentication = (
       providerId = context.req.headers['x-forwarded-user']!.at(-1)!
     }
 
-    const existingUser = await identityProviderConnectionService.findByProviderId([{
-      provider: 'google',
-      providerId: providerId,
-    }])
+    let user
+    let identityProviderConnection
 
-    if (existingUser.length === 0) {
-      const createdUser = await userService.create([{
+    const existingIdentityProviderConnection = await identityProviderConnectionService.findByProviderId('google', providerId)
+
+    if (existingIdentityProviderConnection) {
+      const foundUsers = await userService.findById([ existingIdentityProviderConnection.userId ])
+      user = foundUsers[0]
+
+      identityProviderConnection = existingIdentityProviderConnection
+    } else {
+      const createdUsers = await userService.create([{
         name: generateRandomName(),
       }])
+      user = createdUsers[0]
 
-      await identityProviderConnectionService.create([{
-        userId: createdUser[0].id,
+      const createdIdentityProviderConnections = await identityProviderConnectionService.create([{
+        userId: user.id,
         provider: 'google',
         providerId: providerId,
       }])
+      identityProviderConnection = createdIdentityProviderConnections[0]
 
       return { redirect: {
         destination: `/welcome?redirect=${ options.redirect }`,
@@ -44,6 +51,16 @@ export const withAuthentication = (
       } }
     }
 
-    return handler(context)
+    const result = await handler(context)
+
+    // @ts-ignore
+    if (!result.props) result.props = {}
+    // @ts-ignore
+    result.props.me = {
+      user,
+      identityProviderConnection,
+    }
+
+    return result
   }
 }

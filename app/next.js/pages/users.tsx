@@ -125,7 +125,7 @@ const Home: NextPage = ({ ssrUsers }: InferGetServerSidePropsType<typeof getServ
     },
   ]
 
-  const dataGridRows: GridRowsProp = users.filter(user => !user.archivedDate)
+  const dataGridRows: GridRowsProp = users.filter(user => !user.archivedDate) // @TODO: Check for me
   const dataGridRowsArchived: GridRowsProp = users.filter(user => user.archivedDate)
 
   const [ sortModel, setSortModel ] = useState([

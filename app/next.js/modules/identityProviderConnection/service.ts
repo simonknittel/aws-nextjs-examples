@@ -1,6 +1,6 @@
-import { BatchGetItemCommand, BatchGetItemCommandInput, BatchWriteItemCommand, BatchWriteItemCommandInput, QueryCommand, QueryCommandInput, UpdateItemCommand, UpdateItemCommandInput, WriteRequest } from '@aws-sdk/client-dynamodb'
+import { BatchWriteItemCommand, BatchWriteItemCommandInput, GetItemCommand, GetItemCommandInput, QueryCommand, QueryCommandInput, WriteRequest } from '@aws-sdk/client-dynamodb'
 import { ddbClient } from '../../utils/ddbClient'
-import { CreateItem, DeleteItem, IdentityProviderConnectionServiceInterface, IdentityProviderConnection, FindByProviderIdItem } from './types'
+import { CreateItem, DeleteItem, IdentityProviderConnectionServiceInterface, IdentityProviderConnection } from './types'
 
 class IdentityProviderConnectionService implements IdentityProviderConnectionServiceInterface {
   private TABLE_NAME = 'IdentityProviderConnection'
@@ -12,7 +12,7 @@ class IdentityProviderConnectionService implements IdentityProviderConnectionSer
     'ProviderEmail', // S
   ]
 
-  public async create(items: CreateItem[]) {
+  public async create(items: CreateItem[]): Promise<IdentityProviderConnection[]> {
     const requests: WriteRequest[] = items.map(item => {
       return {
         PutRequest: {
@@ -35,34 +35,34 @@ class IdentityProviderConnectionService implements IdentityProviderConnectionSer
 
     try {
       await ddbClient.send(command)
+      return requests.map(item => {
+        return {
+          userId: item.PutRequest!.Item!.UserId!.S!,
+          provider: item.PutRequest!.Item!.Provider!.S!,
+          providerId: item.PutRequest!.Item!.ProviderId!.S!,
+        }
+      })
     } catch (error) {
       console.error(error)
       throw error
     }
   }
 
-  public async findByProviderId(items: FindByProviderIdItem[]): Promise<IdentityProviderConnection[]> {
-    const keys = items.map(({ provider, providerId }) => {
-      return {
+  public async findByProviderId(provider: IdentityProviderConnection['provider'], providerId: IdentityProviderConnection['providerId']): Promise<IdentityProviderConnection> {
+    const input: GetItemCommandInput = {
+      TableName: this.TABLE_NAME,
+      Key: {
         Provider: { S: provider },
         ProviderId: { S: providerId },
-      }
-    })
-
-    const input: BatchGetItemCommandInput = {
-      RequestItems: {
-        [this.TABLE_NAME]: {
-          Keys: keys,
-          AttributesToGet: this.ATTRIBUTES
-        }
       },
+      AttributesToGet: this.ATTRIBUTES
     }
 
-    const command = new BatchGetItemCommand(input)
+    const command = new GetItemCommand(input)
 
     try {
       const response = await ddbClient.send(command)
-      return response.Responses![this.TABLE_NAME].map(this.mapper)
+      return this.mapper(response.Item!)
     } catch (error) {
       console.error(error)
       throw error
