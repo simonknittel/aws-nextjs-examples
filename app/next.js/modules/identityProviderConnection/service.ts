@@ -1,6 +1,5 @@
-import { BatchGetItemCommand, BatchGetItemCommandInput, BatchWriteItemCommand, BatchWriteItemCommandInput, UpdateItemCommand, UpdateItemCommandInput, WriteRequest } from '@aws-sdk/client-dynamodb'
+import { BatchGetItemCommand, BatchGetItemCommandInput, BatchWriteItemCommand, BatchWriteItemCommandInput, QueryCommand, QueryCommandInput, UpdateItemCommand, UpdateItemCommandInput, WriteRequest } from '@aws-sdk/client-dynamodb'
 import { ddbClient } from '../../utils/ddbClient'
-import { v4 as uuidv4 } from 'uuid'
 import { CreateItem, DeleteItem, IdentityProviderConnectionServiceInterface, IdentityProviderConnection, FindByProviderIdItem } from './types'
 
 class IdentityProviderConnectionService implements IdentityProviderConnectionServiceInterface {
@@ -70,6 +69,27 @@ class IdentityProviderConnectionService implements IdentityProviderConnectionSer
     }
   }
 
+  public async findByUserId(userId: string): Promise<IdentityProviderConnection[]> {
+    const input: QueryCommandInput = {
+      TableName: this.TABLE_NAME,
+      IndexName: 'UserIdIndex',
+      KeyConditionExpression: '#a = :a',
+      ExpressionAttributeNames: { '#a': 'UserId' },
+      ExpressionAttributeValues: { ':a': { S: userId } },
+      Select: 'ALL_ATTRIBUTES'
+    }
+
+    const command = new QueryCommand(input)
+
+    try {
+      const response = await ddbClient.send(command)
+      return response.Items!.map(this.mapper)
+    } catch (error) {
+      console.error(error)
+      throw error
+    }
+  }
+
   public async delete(items: DeleteItem[]) {
     const requests: WriteRequest[] = items.map(item => {
       return {
@@ -98,18 +118,18 @@ class IdentityProviderConnectionService implements IdentityProviderConnectionSer
     }
   }
 
-  private mapper(user: any) {
+  private mapper(identityConnection: any) {
     const rtn: IdentityProviderConnection = {
-      userId: user.UserId.S!,
-      provider: user.Provider.S!,
-      providerId: user.ProviderId.S!,
+      userId: identityConnection.UserId.S!,
+      provider: identityConnection.Provider.S!,
+      providerId: identityConnection.ProviderId.S!,
     }
 
-    if (user.ProviderEmail?.S) rtn.providerEmail = user.ProviderEmail.S
+    if (identityConnection.ProviderEmail?.S) rtn.providerEmail = identityConnection.ProviderEmail.S
 
     return rtn
   }
 }
 
-const identityProviderService = new IdentityProviderConnectionService()
-export { identityProviderService }
+const identityProviderConnectionService = new IdentityProviderConnectionService()
+export { identityProviderConnectionService }

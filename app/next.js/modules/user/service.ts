@@ -2,6 +2,7 @@ import { BatchGetItemCommand, BatchGetItemCommandInput, BatchWriteItemCommand, B
 import { ddbClient } from '../../utils/ddbClient'
 import { v4 as uuidv4 } from 'uuid'
 import { CreateItem, DeleteItem, UserServiceInterface, User, PatchItem } from './types'
+import { identityProviderConnectionService } from '../identityProviderConnection/service'
 
 class UserService implements UserServiceInterface {
   private TABLE_NAME = 'User'

@@ -33,7 +33,26 @@ Minimal containerized web application with database and authentication hosted on
 
     ```sh
     aws dynamodb create-table --table-name User --billing-mode PAY_PER_REQUEST --attribute-definitions AttributeName=Id,AttributeType=S --key-schema AttributeName=Id,KeyType=HASH
-    aws dynamodb create-table --table-name IdentityProviderConnection --billing-mode PAY_PER_REQUEST --attribute-definitions AttributeName=Provider,AttributeType=S AttributeName=ProviderId,AttributeType=S --key-schema AttributeName=Provider,KeyType=HASH AttributeName=ProviderId,KeyType=RANGE
+
+    aws dynamodb create-table \
+        --table-name IdentityProviderConnection \
+        --billing-mode PAY_PER_REQUEST \
+        --attribute-definitions AttributeName=Provider,AttributeType=S \
+                                AttributeName=ProviderId,AttributeType=S \
+                                AttributeName=UserId,AttributeType=S \
+        --key-schema AttributeName=Provider,KeyType=HASH \
+                     AttributeName=ProviderId,KeyType=RANGE \
+        --global-secondary-indexes \
+            "[{
+                \"IndexName\": \"UserIdIndex\",
+                \"KeySchema\": [{
+                    \"AttributeName\": \"UserId\",
+                    \"KeyType\": \"HASH\"
+                }],
+                \"Projection\": {
+                    \"ProjectionType\": \"ALL\"
+                }
+            }]"
     ```
 
 3. Create IAM policy called `aws-service`

@@ -1,6 +1,7 @@
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next'
-import { identityProviderService } from '../modules/identityProviderConnection/service'
+import { identityProviderConnectionService } from '../modules/identityProviderConnection/service'
 import { userService } from '../modules/user/service'
+import { generateRandomName } from './generateRandomName'
 
 interface Options {
   redirect: string;
@@ -21,17 +22,17 @@ export const withAuthentication = (
       providerId = context.req.headers['x-forwarded-user']!.at(-1)!
     }
 
-    const existingUser = await identityProviderService.findByProviderId([{
+    const existingUser = await identityProviderConnectionService.findByProviderId([{
       provider: 'google',
       providerId: providerId,
     }])
 
     if (existingUser.length === 0) {
       const createdUser = await userService.create([{
-        name: 'foo', // @TODO: Create random name (e.g. Blue Rhino)
+        name: generateRandomName(),
       }])
 
-      await identityProviderService.create([{
+      await identityProviderConnectionService.create([{
         userId: createdUser[0].id,
         provider: 'google',
         providerId: providerId,
