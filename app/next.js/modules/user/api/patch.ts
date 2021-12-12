@@ -19,6 +19,11 @@ export async function patchHandler(
       .end()
   }
 
+  /**
+   * For some reason a 204 response to a PATCH request causes Chrome to log
+   * "Fetch failed loading: PATCH {PH3}." even though the request is successful.
+   * See https://stackoverflow.com/questions/57477805/why-do-i-get-fetch-failed-loading-when-it-actually-worked
+   */
   return res
     .status(204)
     .end()

@@ -43,7 +43,7 @@ export const withAuthentication = (
       identityProviderConnection = createdIdentityProviderConnections[0]
 
       return { redirect: {
-        destination: `/welcome?redirect=${ options.redirect }`,
+        destination: `/account/profile?redirect=${ options.redirect }`,
         permanent: false,
       } }
     }

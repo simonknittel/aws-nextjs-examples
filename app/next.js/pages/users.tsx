@@ -1,4 +1,4 @@
-import type { GetServerSideProps, GetServerSidePropsContext, InferGetServerSidePropsType, NextPage } from 'next'
+import type { GetServerSideProps, InferGetServerSidePropsType, NextPage } from 'next'
 import Head from 'next/head'
 import { userService } from '../modules/user/service'
 import React, { useState } from 'react'
@@ -16,7 +16,7 @@ import ArchiveButton from '../components/ArchiveButton'
 import RestoreButton from '../components/RestoreButton'
 import { withAuthentication } from '../utils/withAuthentication'
 
-export const getServerSideProps: GetServerSideProps = withAuthentication(withCSRFToken(async (context: GetServerSidePropsContext) => {
+export const getServerSideProps: GetServerSideProps = withAuthentication(withCSRFToken(async () => {
   const props: { [key: string]: any } = {}
 
   const users = await userService.findAll()
