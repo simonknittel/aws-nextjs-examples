@@ -167,9 +167,7 @@ Minimal containerized web application with database and authentication hosted on
 
 3. (Windows only) Implement port forwarding
 
-
-
-    The `host.docker.internal` in `nginx.local.conf` leads to the Windows host instead of WSL2. Therefore we'll have to add a port forwarding rule to forward port 3000 from the Windows host to WSL2. See <https://github.com/microsoft/WSL/issues/4150> for more information.
+    The `host.docker.internal` in `nginx.local.conf` leads to the Windows host instead of WSL2. Therefore we'll have to add a port forwarding rule to forward port 3000 from the Windows host to WSL2. See <https://github.com/microsoft/WSL/issues/4150> for more information. Caveat: The IP address of the WSL2 may changes and you need to run the following commands again.
 
     ```powershell
     netsh interface portproxy delete v4tov4 listenport="3000" # Delete any existing port 3000 forwarding
