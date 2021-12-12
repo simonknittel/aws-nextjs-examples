@@ -4,7 +4,13 @@ import { CreateItem, DeleteItem, PatchItem, User } from './types'
 
 const BASE_PATH = '/user'
 
-export const useUserGetAll = (initialData: User[] = []): [ User[], boolean, () => Promise<void> ] => {
+interface Options {
+  disableAutomaticRefresh?: boolean
+}
+
+export const useUserGetAll = (initialData: User[] = [], options: Options = {}): [ User[], boolean, () => Promise<void> ] => {
+  const { disableAutomaticRefresh } = options
+
   const [ data, setData ] = useState(initialData)
   const [ refreshInProgress, setRefreshInProgress ] = useState(false)
 
@@ -23,12 +29,14 @@ export const useUserGetAll = (initialData: User[] = []): [ User[], boolean, () =
   }, [])
 
   useEffect(() => {
+    if (disableAutomaticRefresh) return
+
     const interval = setInterval(async () => {
       await refresh()
     }, 30_000)
 
     return () => clearInterval(interval)
-  }, [ refresh ])
+  }, [ refresh, disableAutomaticRefresh ])
 
   return [
     data,

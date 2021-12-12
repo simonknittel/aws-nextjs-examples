@@ -26,14 +26,15 @@ export const getServerSideProps: GetServerSideProps = withAuthentication(withCSR
 }), { redirect: '/users' })
 
 const Home: NextPage = ({ ssrUsers, me }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
-  const [ users, usersRefreshInProgress, refreshUsers ] = useUserGetAll(ssrUsers)
+  const [ disableAutomaticRefresh, setDisableAutomaticRefresh ] = useState(false)
+  const [ users, usersRefreshInProgress, refreshUsers ] = useUserGetAll(ssrUsers, { disableAutomaticRefresh })
 
   const dataGridColumns: GridColDef[] = [
     {
       field: 'id',
       headerName: 'ID',
       width: 400,
-      renderCell: ({ value, row }) => (
+      renderCell: ({ value }) => (
         <Stack
           direction="row"
           justifyContent="space-between"
@@ -176,11 +177,20 @@ const Home: NextPage = ({ ssrUsers, me }: InferGetServerSidePropsType<typeof get
           Users
         </Typography>
 
-        <Box pt={ 2 }>
+        <Box mt={ 2 }>
           <CreateUserForm submitCallback={ refreshUsers } />
         </Box>
 
-        <Box pt={ 4 }>
+        <Box mt={ 4 }>
+          <Button
+            onClick={ () => setDisableAutomaticRefresh(!disableAutomaticRefresh) }
+            variant="outlined"
+          >
+            { disableAutomaticRefresh ? 'Enable' : 'Disable' } automatic refresh
+          </Button>
+        </Box>
+
+        <Box pt={ 2 }>
           <DataGrid
             columns={ dataGridColumns }
             rows={ dataGridRows }
@@ -192,7 +202,7 @@ const Home: NextPage = ({ ssrUsers, me }: InferGetServerSidePropsType<typeof get
           />
         </Box>
 
-        <Box pt={ 4 }>
+        <Box mt={ 4 }>
           {/* @TODO: Customize https://mui.com/components/accordion/#customization */}
           <Accordion expanded={ showArchivedUsers } onChange={ () => setShowArchivedUsers(!showArchivedUsers) }>
             <AccordionSummary aria-controls="archived-users-content" id="archived-users-header">
