@@ -4,8 +4,8 @@ on:
   push:
     paths:
       - '.github/workflows/verify_dockerfile.yml'
-      - 'app/next.js/**'
-      - '.nvmrc'
+      - 'app/.dockerignore'
+      - 'app/Dockerfile'
 
 jobs:
 
