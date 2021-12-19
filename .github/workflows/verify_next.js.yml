@@ -1,0 +1,55 @@
+name: Verify Next.js
+
+on:
+  push:
+    paths:
+      - '.github/workflows/verify_next.js.yml'
+      - 'app/next.js/**'
+      - '.nvmrc'
+
+jobs:
+
+  build:
+    runs-on: ubuntu-20.04
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2.4.0
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v2.5.0
+      with:
+        node-version-file: '.nvmrc'
+
+    - name: Cache
+      id: cache
+      uses: actions/cache@v2.1.7
+      with:
+        path: ./app/next.js/node_modules
+        key: node-${{ secrets.CACHE_VERSION }}}-${{ hashFiles('package-lock.json', '.nvmrc') }}
+        # See https://github.com/actions/cache/issues/2#issuecomment-673493515
+        # about why we are using CACHE_VERSION. When updating the CACHE_VERSION
+        # choose any random string.
+
+    - run: npm ci
+      if: steps.cache.outputs.cache-hit != 'true'
+      working-directory: ./app/next.js
+
+    # @TODO: Parallelize Lint and Build
+    - name: Lint
+      env:
+        CI: true
+        NODE_ENV: development
+      run: npm run lint
+      working-directory: ./app/next.js
+
+    # @TODO: Parallelize Lint and Build
+    - name: Build
+      env:
+        CI: true
+        NODE_ENV: development
+        AWS_ACCESS_KEY_ID: dummy
+        AWS_SECRET_ACCESS_KEY: dummy
+        NEXT_TELEMETRY_DISABLED: 1
+      run: npm run build
+      working-directory: ./app/next.js
