@@ -1,10 +1,11 @@
 {
   "cSpell.words": [
+    "Buildx",
     "inet",
     "mkcert",
     "mkdir",
-    "nvmrc",
     "netsh",
+    "nvmrc",
     "uuidv4"
   ]
 }
