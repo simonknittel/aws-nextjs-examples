@@ -1,10 +1,16 @@
 import { useState, useCallback, useEffect } from 'react'
 import useAPI from '../../hooks/useAPI'
-import { CreateItem, DeleteItem, User } from './types'
+import { CreateItem, DeleteItem, PatchItem, User } from './types'
 
 const BASE_PATH = '/user'
 
-export const useUserGetAll = (initialData: User[] = []): [ User[], boolean, () => Promise<void> ] => {
+interface Options {
+  disableAutomaticRefresh?: boolean
+}
+
+export const useUserGetAll = (initialData: User[] = [], options: Options = {}): [ User[], boolean, () => Promise<void> ] => {
+  const { disableAutomaticRefresh } = options
+
   const [ data, setData ] = useState(initialData)
   const [ refreshInProgress, setRefreshInProgress ] = useState(false)
 
@@ -23,12 +29,14 @@ export const useUserGetAll = (initialData: User[] = []): [ User[], boolean, () =
   }, [])
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      refresh()
+    if (disableAutomaticRefresh) return
+
+    const interval = setInterval(async () => {
+      await refresh()
     }, 30_000)
 
     return () => clearInterval(interval)
-  }, [ refresh ])
+  }, [ refresh, disableAutomaticRefresh ])
 
   return [
     data,
@@ -38,7 +46,7 @@ export const useUserGetAll = (initialData: User[] = []): [ User[], boolean, () =
 }
 
 export const useUserCreate = ({ name }: CreateItem): [ boolean, () => Promise<void> ] => {
-  const [ data, isLoading, doFetch ] =  useAPI(BASE_PATH, {
+  const [ data, isLoading, doFetch ] = useAPI(BASE_PATH, {
     body: JSON.stringify({
       name
     }),
@@ -48,8 +56,23 @@ export const useUserCreate = ({ name }: CreateItem): [ boolean, () => Promise<vo
   return [ isLoading, doFetch ]
 }
 
-export const useUserUpdate = () => {
-  throw new Error('Not implemented yet')
+export const useUserRead = (id: User['id']): [ User, boolean, () => Promise<void> ] => {
+  const [ data, isLoading, doFetch ] = useAPI(`${ BASE_PATH }/${ id }`, {
+    method: 'GET',
+  })
+
+  return [ data, isLoading, doFetch ]
+}
+
+export const useUserUpdate = (id: User['id'], { name }: PatchItem): [ boolean, () => Promise<void> ] => {
+  const [ data, isLoading, doFetch ] = useAPI(`${ BASE_PATH }/${ id }`, {
+    body: JSON.stringify({
+      name
+    }),
+    method: 'PATCH',
+  })
+
+  return [ isLoading, doFetch ]
 }
 
 export const useUserDelete = (id: DeleteItem): [ boolean, () => Promise<void> ] => {

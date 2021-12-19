@@ -25,8 +25,8 @@ export interface DeleteItem {
 }
 
 export interface IdentityProviderConnectionServiceInterface {
-  create(items: CreateItem[]): Promise<void>;
-  findByProviderId(items: FindByProviderIdItem[]): Promise<IdentityProviderConnection[]>
+  create(items: CreateItem[]): Promise<IdentityProviderConnection[]>;
+  findByProviderId(provider: IdentityProviderConnection['provider'], providerId: IdentityProviderConnection['providerId']): Promise<IdentityProviderConnection | null>
   findByUserId(userId: IdentityProviderConnection['userId']): Promise<IdentityProviderConnection[]>
   delete(items: DeleteItem[]): Promise<void>;
 }

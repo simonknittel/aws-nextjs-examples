@@ -4,6 +4,7 @@
     "mikestead.dotenv",
     "dbaeumer.vscode-eslint",
     "hangxingliu.vscode-nginx-conf-hint",
-    "humao.rest-client"
+    "humao.rest-client",
+    "cschleiden.vscode-github-actions"
   ]
 }

@@ -8,7 +8,8 @@ type ReqProp = IncomingMessage & { cookies: NextApiRequestCookies }
 
 const SESSION_COOKIE = '_oauth2_proxy'
 const CSRF_TOKEN_HEADER = 'x-csrf-token'
-const CSRF_MAX_AGE = 1000 * 60 * 5 // 5 minutes
+// @TODO: Find fix to CSRF token not updating when using client-side navigation
+const CSRF_MAX_AGE = 1000 * 60 * 15 // 15 minutes
 
 export function generateCSRFToken(req: ReqProp) {
   if (!process.env.CSRF_SECRET || !req.cookies[SESSION_COOKIE]) return null

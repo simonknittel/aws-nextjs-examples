@@ -26,7 +26,7 @@ const useAPI = (url: string, options: Options): [ any, boolean, () => Promise<vo
 
     const response = await fetch('/api' + url, init)
 
-    if (response.headers.get('content-type') === 'application/json') {
+    if (response.headers.get('content-type') === 'application/json; charset=utf-8') {
       const json = await response.json()
       setData(json)
     }

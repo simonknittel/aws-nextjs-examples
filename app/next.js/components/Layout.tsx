@@ -1,10 +1,11 @@
-import { AppBar, Box, CssBaseline, Divider, Drawer, IconButton, List, ListItemButton, ListItemIcon, ListItemText, Toolbar } from '@mui/material'
+import { AppBar, Box, CssBaseline, Divider, Drawer, IconButton, List, ListItem, ListItemButton, ListItemIcon, ListItemText, ListSubheader, Toolbar } from '@mui/material'
 import React, { useState } from 'react'
 import MenuIcon from '@mui/icons-material/Menu'
 import Footer from './Footer'
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined'
 import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined'
 import { NextLinkComposed } from './Link'
+import AssignmentIndOutlinedIcon from '@mui/icons-material/AssignmentIndOutlined';
 
 const drawerWidth = 240
 
@@ -33,6 +34,19 @@ const Layout: React.FunctionComponent = ({ children })  => {
             <GroupOutlinedIcon />
           </ListItemIcon>
           <ListItemText primary="Users" />
+        </ListItemButton>
+      </List>
+
+      <Divider />
+
+      <List
+        subheader={<ListSubheader>Account</ListSubheader>}
+      >
+        <ListItemButton key="Profile" component={ NextLinkComposed } to="/account/profile">
+          <ListItemIcon>
+            <AssignmentIndOutlinedIcon />
+          </ListItemIcon>
+          <ListItemText primary="Profile" />
         </ListItemButton>
       </List>
     </nav>

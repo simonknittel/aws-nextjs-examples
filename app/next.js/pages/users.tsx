@@ -1,4 +1,4 @@
-import type { GetServerSideProps, GetServerSidePropsContext, InferGetServerSidePropsType, NextPage } from 'next'
+import type { GetServerSideProps, InferGetServerSidePropsType, NextPage } from 'next'
 import Head from 'next/head'
 import { userService } from '../modules/user/service'
 import React, { useState } from 'react'
@@ -16,7 +16,7 @@ import ArchiveButton from '../components/ArchiveButton'
 import RestoreButton from '../components/RestoreButton'
 import { withAuthentication } from '../utils/withAuthentication'
 
-export const getServerSideProps: GetServerSideProps = withAuthentication(withCSRFToken(async (context: GetServerSidePropsContext) => {
+export const getServerSideProps: GetServerSideProps = withAuthentication(withCSRFToken(async () => {
   const props: { [key: string]: any } = {}
 
   const users = await userService.findAll()
@@ -25,8 +25,9 @@ export const getServerSideProps: GetServerSideProps = withAuthentication(withCSR
   return { props }
 }), { redirect: '/users' })
 
-const Home: NextPage = ({ ssrUsers }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
-  const [ users, usersRefreshInProgress, refreshUsers ] = useUserGetAll(ssrUsers)
+const Home: NextPage = ({ ssrUsers, me }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+  const [ disableAutomaticRefresh, setDisableAutomaticRefresh ] = useState(false)
+  const [ users, usersRefreshInProgress, refreshUsers ] = useUserGetAll(ssrUsers, { disableAutomaticRefresh })
 
   const dataGridColumns: GridColDef[] = [
     {
@@ -93,34 +94,58 @@ const Home: NextPage = ({ ssrUsers }: InferGetServerSidePropsType<typeof getServ
     {
       field: 'actions',
       headerName: 'Actions',
-      renderCell: (params) => (<>
-        { params.row.archivedDate && <>
-          <RestoreButton
-            params={ params }
-            callback={ refreshUsers }
-          />
+      renderCell: (params) => {
+        if (params.row.id === me.user.id) {
+          return (
+            <>
+              <Button
+                variant="contained"
+                size="small"
+                startIcon={<CreateOutlinedIcon />}
+              >Edit</Button>
 
-          <DeleteButton
-            params={ params }
-            callback={ refreshUsers }
-            sx={{ ml: 1 }}
-          />
-        </> }
+              <Typography color="grey.500" sx={{ ml: 1 }} variant="body2">
+                You can&apos;t archive or delete yourself.
+              </Typography>
+            </>
+          )
+        }
 
-        { !params.row.archivedDate && <>
-          <Button
-            variant="contained"
-            size="small"
-            startIcon={<CreateOutlinedIcon />}
-          >Edit</Button>
+        if (params.row.archivedDate) {
+          return (
+            <>
+              <RestoreButton
+                params={ params }
+                callback={ refreshUsers }
+              />
 
-          <ArchiveButton
-            params={ params }
-            callback={ refreshUsers }
-            sx={{ ml: 1 }}
-          />
-        </> }
-      </>),
+              <DeleteButton
+                params={ params }
+                callback={ refreshUsers }
+                sx={{ ml: 1 }}
+              />
+            </>
+          )
+        }
+
+        if (!params.row.archivedDate) {
+          return (
+            <>
+              <Button
+                variant="contained"
+                size="small"
+                startIcon={<CreateOutlinedIcon />}
+              >Edit</Button>
+
+              <ArchiveButton
+                params={ params }
+                callback={ refreshUsers }
+                sx={{ ml: 1 }}
+              />
+            </>
+          )
+        }
+      },
       flex: 1,
     },
   ]
@@ -152,11 +177,20 @@ const Home: NextPage = ({ ssrUsers }: InferGetServerSidePropsType<typeof getServ
           Users
         </Typography>
 
-        <Box pt={ 2 }>
+        <Box mt={ 2 }>
           <CreateUserForm submitCallback={ refreshUsers } />
         </Box>
 
-        <Box pt={ 4 }>
+        <Box mt={ 4 }>
+          <Button
+            onClick={ () => setDisableAutomaticRefresh(!disableAutomaticRefresh) }
+            variant="outlined"
+          >
+            { disableAutomaticRefresh ? 'Enable' : 'Disable' } automatic refresh
+          </Button>
+        </Box>
+
+        <Box pt={ 2 }>
           <DataGrid
             columns={ dataGridColumns }
             rows={ dataGridRows }
@@ -168,7 +202,7 @@ const Home: NextPage = ({ ssrUsers }: InferGetServerSidePropsType<typeof getServ
           />
         </Box>
 
-        <Box pt={ 4 }>
+        <Box mt={ 4 }>
           {/* @TODO: Customize https://mui.com/components/accordion/#customization */}
           <Accordion expanded={ showArchivedUsers } onChange={ () => setShowArchivedUsers(!showArchivedUsers) }>
             <AccordionSummary aria-controls="archived-users-content" id="archived-users-header">

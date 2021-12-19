@@ -22,7 +22,7 @@ const CreateUserForm = ({ submitCallback }: { submitCallback: any }) => {
 
   return (
     <form onSubmit={ onSubmit } onReset={ onReset }>
-      <TextField label="Name" name="name" type="text" required value={ name } onChange={ e => setName(e.target.value ) } variant="filled" />
+      <TextField label="Name" name="name" type="text" required value={ name } onChange={ e => setName(e.target.value) } variant="filled" />
       <LoadingButton variant="contained" type="submit" loading={ isLoading } endIcon={<SendOutlined />}>Submit</LoadingButton>
     </form>
   )
