@@ -26,7 +26,7 @@ jobs:
       uses: actions/cache@v2.1.7
       with:
         path: ./app/next.js/node_modules
-        key: node-${{ secrets.CACHE_VERSION }}}-${{ hashFiles('package-lock.json', '.nvmrc') }}
+        key: node-${{ secrets.CACHE_VERSION }}-${{ hashFiles('package-lock.json', '.nvmrc') }}
         # See https://github.com/actions/cache/issues/2#issuecomment-673493515
         # about why we are using CACHE_VERSION. When updating the CACHE_VERSION
         # choose any random string.
