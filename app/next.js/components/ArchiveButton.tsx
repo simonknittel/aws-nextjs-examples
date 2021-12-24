@@ -1,7 +1,7 @@
-import { LoadingButton } from '@mui/lab'
-import React, { ReactEventHandler } from 'react'
-import ArchiveOutlinedIcon from '@mui/icons-material/ArchiveOutlined'
-import { useUserArchive } from '../modules/user/client'
+import { LoadingButton } from "@mui/lab";
+import React, { ReactEventHandler } from "react";
+import ArchiveOutlinedIcon from "@mui/icons-material/ArchiveOutlined";
+import { useUserArchive } from "../modules/user/client";
 
 interface Props {
   params: any;
@@ -10,24 +10,26 @@ interface Props {
 }
 
 const ArchiveButton = ({ params, callback, ...other }: Props) => {
-  const [ isLoading, doArchive ] = useUserArchive(params.id)
+  const [isLoading, doArchive] = useUserArchive(params.id);
 
-  const onClick: ReactEventHandler = async e => {
-    e.preventDefault()
-    await doArchive()
-    callback()
-  }
+  const onClick: ReactEventHandler = async (e) => {
+    e.preventDefault();
+    await doArchive();
+    callback();
+  };
 
   return (
     <LoadingButton
       variant="outlined"
       size="small"
       startIcon={<ArchiveOutlinedIcon />}
-      onClick={ onClick }
-      loading={ isLoading }
-      { ...other }
-    >Archive</LoadingButton>
-  )
-}
+      onClick={onClick}
+      loading={isLoading}
+      {...other}
+    >
+      Archive
+    </LoadingButton>
+  );
+};
 
-export default ArchiveButton
+export default ArchiveButton;

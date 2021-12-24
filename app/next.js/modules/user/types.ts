@@ -8,22 +8,22 @@ export interface User {
 }
 
 export interface CreateItem {
-  name: User['name'];
+  name: User["name"];
 }
 
 export interface PatchItem {
-  name?: User['name'];
+  name?: User["name"];
   archivedDate?: string | null;
 }
 
 export interface DeleteItem {
-  id: User['id'];
+  id: User["id"];
 }
 
 export interface UserServiceInterface {
   create(items: CreateItem[]): Promise<User[]>;
   findAll(): Promise<User[]>;
-  findById(ids: User['id'][]): Promise<User[]>;
-  update(id: User['id'], patch: PatchItem): Promise<void>;
+  findById(ids: User["id"][]): Promise<User[]>;
+  update(id: User["id"], patch: PatchItem): Promise<void>;
   delete(items: DeleteItem[]): Promise<void>;
 }

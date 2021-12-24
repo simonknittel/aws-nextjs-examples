@@ -1,16 +1,16 @@
-import './_app.css'
-import type { AppProps } from 'next/app'
-import Layout from '../components/Layout'
-import { CSRFContextProvider } from '../modules/csrf'
+import "./_app.css";
+import type { AppProps } from "next/app";
+import Layout from "../components/Layout";
+import { CSRFContextProvider } from "../modules/csrf";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <CSRFContextProvider pageProps={ pageProps }>
+    <CSRFContextProvider pageProps={pageProps}>
       <Layout>
-        <Component { ...pageProps } />
+        <Component {...pageProps} />
       </Layout>
     </CSRFContextProvider>
-  )
+  );
 }
 
-export default MyApp
+export default MyApp;

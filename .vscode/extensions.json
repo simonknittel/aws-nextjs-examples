@@ -5,6 +5,7 @@
     "dbaeumer.vscode-eslint",
     "hangxingliu.vscode-nginx-conf-hint",
     "humao.rest-client",
-    "cschleiden.vscode-github-actions"
+    "cschleiden.vscode-github-actions",
+    "esbenp.prettier-vscode"
   ]
 }

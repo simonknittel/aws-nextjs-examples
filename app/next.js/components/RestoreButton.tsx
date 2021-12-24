@@ -1,7 +1,7 @@
-import { LoadingButton } from '@mui/lab'
-import React, { ReactEventHandler } from 'react'
-import RestoreFromTrashOutlinedIcon from '@mui/icons-material/RestoreFromTrashOutlined'
-import { useUserRestore } from '../modules/user/client'
+import { LoadingButton } from "@mui/lab";
+import React, { ReactEventHandler } from "react";
+import RestoreFromTrashOutlinedIcon from "@mui/icons-material/RestoreFromTrashOutlined";
+import { useUserRestore } from "../modules/user/client";
 
 interface Props {
   params: any;
@@ -10,24 +10,26 @@ interface Props {
 }
 
 const RestoreButton = ({ params, callback, ...other }: Props) => {
-  const [ isLoading, doRestore ] = useUserRestore(params.id)
+  const [isLoading, doRestore] = useUserRestore(params.id);
 
-  const onClick: ReactEventHandler = async e => {
-    e.preventDefault()
-    await doRestore()
-    callback()
-  }
+  const onClick: ReactEventHandler = async (e) => {
+    e.preventDefault();
+    await doRestore();
+    callback();
+  };
 
   return (
     <LoadingButton
       variant="outlined"
       size="small"
       startIcon={<RestoreFromTrashOutlinedIcon />}
-      onClick={ onClick }
-      loading={ isLoading }
-      { ...other }
-    >Restore</LoadingButton>
-  )
-}
+      onClick={onClick}
+      loading={isLoading}
+      {...other}
+    >
+      Restore
+    </LoadingButton>
+  );
+};
 
-export default RestoreButton
+export default RestoreButton;

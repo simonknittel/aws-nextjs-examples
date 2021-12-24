@@ -1,7 +1,7 @@
-import { LoadingButton } from '@mui/lab'
-import React, { ReactEventHandler } from 'react'
-import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined'
-import { useUserDelete } from '../modules/user/client'
+import { LoadingButton } from "@mui/lab";
+import React, { ReactEventHandler } from "react";
+import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
+import { useUserDelete } from "../modules/user/client";
 
 interface Props {
   params: any;
@@ -10,24 +10,26 @@ interface Props {
 }
 
 const DeleteButton = ({ params, callback, ...other }: Props) => {
-  const [ isLoading, doDelete ] = useUserDelete(params.id)
+  const [isLoading, doDelete] = useUserDelete(params.id);
 
-  const onClick: ReactEventHandler = async e => {
-    e.preventDefault()
-    await doDelete()
-    callback()
-  }
+  const onClick: ReactEventHandler = async (e) => {
+    e.preventDefault();
+    await doDelete();
+    callback();
+  };
 
   return (
     <LoadingButton
       variant="outlined"
       size="small"
       startIcon={<DeleteOutlinedIcon />}
-      onClick={ onClick }
-      loading={ isLoading }
-      { ...other }
-    >Delete</LoadingButton>
-  )
-}
+      onClick={onClick}
+      loading={isLoading}
+      {...other}
+    >
+      Delete
+    </LoadingButton>
+  );
+};
 
-export default DeleteButton
+export default DeleteButton;

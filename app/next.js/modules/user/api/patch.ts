@@ -1,22 +1,17 @@
-import { NextApiRequest, NextApiResponse } from 'next'
-import { userService } from '../service'
+import { NextApiRequest, NextApiResponse } from "next";
+import { userService } from "../service";
 
-export async function patchHandler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
-  const { id } = req.query
+export async function patchHandler(req: NextApiRequest, res: NextApiResponse) {
+  const { id } = req.query;
 
   try {
-    if (typeof id === 'string') {
-      await userService.update(id, req.body)
+    if (typeof id === "string") {
+      await userService.update(id, req.body);
     } else {
-      await userService.update(id[0], req.body)
+      await userService.update(id[0], req.body);
     }
   } catch (error) {
-    return res
-      .status(500)
-      .end()
+    return res.status(500).end();
   }
 
   /**
@@ -24,7 +19,5 @@ export async function patchHandler(
    * "Fetch failed loading: PATCH {PH3}." even though the request is successful.
    * See https://stackoverflow.com/questions/57477805/why-do-i-get-fetch-failed-loading-when-it-actually-worked
    */
-  return res
-    .status(204)
-    .end()
+  return res.status(204).end();
 }

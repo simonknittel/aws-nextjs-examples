@@ -1,100 +1,112 @@
-import { useState, useCallback, useEffect } from 'react'
-import useAPI from '../../hooks/useAPI'
-import { CreateItem, DeleteItem, PatchItem, User } from './types'
+import { useState, useCallback, useEffect } from "react";
+import useAPI from "../../hooks/useAPI";
+import { CreateItem, DeleteItem, PatchItem, User } from "./types";
 
-const BASE_PATH = '/user'
+const BASE_PATH = "/user";
 
 interface Options {
-  disableAutomaticRefresh?: boolean
+  disableAutomaticRefresh?: boolean;
 }
 
-export const useUserGetAll = (initialData: User[] = [], options: Options = {}): [ User[], boolean, () => Promise<void> ] => {
-  const { disableAutomaticRefresh } = options
+export const useUserGetAll = (
+  initialData: User[] = [],
+  options: Options = {}
+): [User[], boolean, () => Promise<void>] => {
+  const { disableAutomaticRefresh } = options;
 
-  const [ data, setData ] = useState(initialData)
-  const [ refreshInProgress, setRefreshInProgress ] = useState(false)
+  const [data, setData] = useState(initialData);
+  const [refreshInProgress, setRefreshInProgress] = useState(false);
 
   const refresh = useCallback(async () => {
-    setRefreshInProgress(true)
+    setRefreshInProgress(true);
 
     try {
-      const res = await fetch(`/api${ BASE_PATH }`)
+      const res = await fetch(`/api${BASE_PATH}`);
       const json = await res.json();
-      setData(json)
+      setData(json);
     } catch (error) {
-      console.error(error)
+      console.error(error);
     }
 
-    setRefreshInProgress(false)
-  }, [])
+    setRefreshInProgress(false);
+  }, []);
 
   useEffect(() => {
-    if (disableAutomaticRefresh) return
+    if (disableAutomaticRefresh) return;
 
     const interval = setInterval(async () => {
-      await refresh()
-    }, 30_000)
+      await refresh();
+    }, 30_000);
 
-    return () => clearInterval(interval)
-  }, [ refresh, disableAutomaticRefresh ])
+    return () => clearInterval(interval);
+  }, [refresh, disableAutomaticRefresh]);
 
-  return [
-    data,
-    refreshInProgress,
-    refresh
-  ]
-}
+  return [data, refreshInProgress, refresh];
+};
 
-export const useUserCreate = ({ name }: CreateItem): [ boolean, () => Promise<void> ] => {
-  const [ data, isLoading, doFetch ] = useAPI(BASE_PATH, {
+export const useUserCreate = ({
+  name,
+}: CreateItem): [boolean, () => Promise<void>] => {
+  const [data, isLoading, doFetch] = useAPI(BASE_PATH, {
     body: JSON.stringify({
-      name
+      name,
     }),
-    method: 'POST',
-  })
+    method: "POST",
+  });
 
-  return [ isLoading, doFetch ]
-}
+  return [isLoading, doFetch];
+};
 
-export const useUserRead = (id: User['id']): [ User, boolean, () => Promise<void> ] => {
-  const [ data, isLoading, doFetch ] = useAPI(`${ BASE_PATH }/${ id }`, {
-    method: 'GET',
-  })
+export const useUserRead = (
+  id: User["id"]
+): [User, boolean, () => Promise<void>] => {
+  const [data, isLoading, doFetch] = useAPI(`${BASE_PATH}/${id}`, {
+    method: "GET",
+  });
 
-  return [ data, isLoading, doFetch ]
-}
+  return [data, isLoading, doFetch];
+};
 
-export const useUserUpdate = (id: User['id'], { name }: PatchItem): [ boolean, () => Promise<void> ] => {
-  const [ data, isLoading, doFetch ] = useAPI(`${ BASE_PATH }/${ id }`, {
+export const useUserUpdate = (
+  id: User["id"],
+  { name }: PatchItem
+): [boolean, () => Promise<void>] => {
+  const [data, isLoading, doFetch] = useAPI(`${BASE_PATH}/${id}`, {
     body: JSON.stringify({
-      name
+      name,
     }),
-    method: 'PATCH',
-  })
+    method: "PATCH",
+  });
 
-  return [ isLoading, doFetch ]
-}
+  return [isLoading, doFetch];
+};
 
-export const useUserDelete = (id: DeleteItem): [ boolean, () => Promise<void> ] => {
-  const [ data, isLoading, doFetch ] = useAPI(`${ BASE_PATH }/${ id }`, {
-    method: 'DELETE',
-  })
+export const useUserDelete = (
+  id: DeleteItem
+): [boolean, () => Promise<void>] => {
+  const [data, isLoading, doFetch] = useAPI(`${BASE_PATH}/${id}`, {
+    method: "DELETE",
+  });
 
-  return [ isLoading, doFetch ]
-}
+  return [isLoading, doFetch];
+};
 
-export const useUserArchive = (id: User['id']): [ boolean, () => Promise<void> ] => {
-  const [ data, isLoading, doFetch ] = useAPI(`${ BASE_PATH }/${ id }/archive`, {
-    method: 'PATCH',
-  })
+export const useUserArchive = (
+  id: User["id"]
+): [boolean, () => Promise<void>] => {
+  const [data, isLoading, doFetch] = useAPI(`${BASE_PATH}/${id}/archive`, {
+    method: "PATCH",
+  });
 
-  return [ isLoading, doFetch ]
-}
+  return [isLoading, doFetch];
+};
 
-export const useUserRestore = (id: User['id']): [ boolean, () => Promise<void> ] => {
-  const [ data, isLoading, doFetch ] = useAPI(`${ BASE_PATH }/${ id }/restore`, {
-    method: 'PATCH',
-  })
+export const useUserRestore = (
+  id: User["id"]
+): [boolean, () => Promise<void>] => {
+  const [data, isLoading, doFetch] = useAPI(`${BASE_PATH}/${id}/restore`, {
+    method: "PATCH",
+  });
 
-  return [ isLoading, doFetch ]
-}
+  return [isLoading, doFetch];
+};
