@@ -3,27 +3,26 @@ name: Verify Dockerfile
 on:
   push:
     paths:
-      - '.github/workflows/verify_dockerfile.yml'
-      - 'app/.dockerignore'
-      - 'app/Dockerfile'
+      - ".github/workflows/verify_dockerfile.yml"
+      - "app/.dockerignore"
+      - "app/Dockerfile"
 
 jobs:
-
   verify:
     runs-on: ubuntu-20.04
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v2.4.0
+      - name: Checkout
+        uses: actions/checkout@v2.4.0
 
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v1.6.0
-      id: buildx
-      with:
-        install: true
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1.6.0
+        id: buildx
+        with:
+          install: true
 
-    - name: Build
-      env:
-        AWS_ACCESS_KEY_ID: dummy
-        AWS_SECRET_ACCESS_KEY: dummy
-      run: docker build --build-arg AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID --build-arg AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY ./app
+      - name: Build
+        env:
+          AWS_ACCESS_KEY_ID: dummy
+          AWS_SECRET_ACCESS_KEY: dummy
+        run: docker build --build-arg AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID --build-arg AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY ./app

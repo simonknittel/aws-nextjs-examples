@@ -1,15 +1,11 @@
 {
-  "extends": [
-    "config:base",
-    ":semanticCommits",
-    ":dependencyDashboard"
-  ],
+  "extends": ["config:base", ":semanticCommits", ":dependencyDashboard"],
   "packageRules": [
     {
       "updateTypes": ["minor", "patch", "pin", "digest"],
       "automerge": true,
       "automergeType": "branch",
-      "schedule": [ "before 1am on Monday" ],
+      "schedule": ["before 1am on Monday"],
       "timezone": "Europe/Berlin",
       "prCreation": "not-pending",
       "stabilityDays": 10

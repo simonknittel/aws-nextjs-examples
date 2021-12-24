@@ -1,7 +1,6 @@
 version: "3.8"
 
 services:
-
   https_proxy:
     image: docker.io/library/nginx:1.21.4-alpine
     ports:

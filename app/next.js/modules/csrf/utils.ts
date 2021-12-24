@@ -33,13 +33,11 @@ export function validateCSRFRequest() {
 
     // Check if required cookies and headers are available
     if (!req.cookies[SESSION_COOKIE])
-      return res
-        .status(403)
-        .json({
-          error: {
-            message: "Missing session cookie during CSRF token validation",
-          },
-        });
+      return res.status(403).json({
+        error: {
+          message: "Missing session cookie during CSRF token validation",
+        },
+      });
     if (!req.headers[CSRF_TOKEN_HEADER])
       return res.status(403).json({ error: { message: "Missing CSRF token" } });
 
