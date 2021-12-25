@@ -2,6 +2,13 @@ name: Verify Next.js
 
 on:
   push:
+    branches:
+      - master
+    paths:
+      - ".github/workflows/verify_next.js.yml"
+      - "app/next.js/**"
+      - ".nvmrc"
+  pull_request:
     paths:
       - ".github/workflows/verify_next.js.yml"
       - "app/next.js/**"

@@ -2,6 +2,9 @@ name: Verify Prettier
 
 on:
   push:
+    branches:
+      - master
+  pull_request:
 
 jobs:
   verify:
