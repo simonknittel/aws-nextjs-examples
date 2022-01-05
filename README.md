@@ -92,7 +92,9 @@ Minimal containerized web application with database and authentication hosted on
 
 5. Build and push an initial container image
 
-6. Create an AWS App Runner service via the AWS Management Console
+6. Make sure STS is enabled for `eu-west-1` (see <https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_temp_enable-regions.html#sts-regions-activate-deactivate>)
+
+7. Create an AWS App Runner service via the AWS Management Console
 
    ```txt
    Repository type: Container registry
