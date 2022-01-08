@@ -1,0 +1,6 @@
+{
+  "AutoScalingConfigurationName": "Minimal",
+  "MaxConcurrency": 100,
+  "MaxSize": 1,
+  "MinSize": 1
+}

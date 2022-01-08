@@ -1,3 +1,5 @@
+aws/*
+!aws/*.example.*
 https_proxy/certs/
 .dccache
 .env

@@ -1,0 +1,33 @@
+{
+  "ServiceName": "nextjs-oauth2-proxy-aws-app-runner",
+  "SourceConfiguration": {
+    "ImageRepository": {
+      "ImageIdentifier": "533499034851.dkr.ecr.eu-west-1.amazonaws.com/simonknittel/aws-service:latest",
+      "ImageConfiguration": {
+        "RuntimeEnvironmentVariables": {
+          "OAUTH2_PROXY_CLIENT_ID": "",
+          "OAUTH2_PROXY_CLIENT_SECRET": "",
+          "OAUTH2_PROXY_COOKIE_SECRET": "",
+          "AWS_ACCESS_KEY_ID": "",
+          "AWS_SECRET_ACCESS_KEY": "",
+          "CSRF_SECRET": ""
+        },
+        "Port": "8080"
+      },
+      "ImageRepositoryType": "ECR"
+    },
+    "AutoDeploymentsEnabled": true,
+    "AuthenticationConfiguration": {
+      "AccessRoleArn": "arn:aws:iam::533499034851:role/service-role/AppRunnerECRAccessRole"
+    }
+  },
+  "InstanceConfiguration": {
+    "Cpu": "1 vCPU",
+    "Memory": "2 GB"
+  },
+  "AutoScalingConfigurationArn": "arn:aws:apprunner:eu-west-1:533499034851:autoscalingconfiguration/Minimal/1/6d33ef7f43654767b69007b7a7b34326",
+  "HealthCheckConfiguration": {
+    "Path": "/ping",
+    "Protocol": "HTTP"
+  }
+}

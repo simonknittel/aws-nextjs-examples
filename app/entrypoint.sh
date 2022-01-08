@@ -5,7 +5,7 @@ set -e
 # Start Next.js
 export NEXT_TELEMETRY_DISABLED=1
 export NODE_ENV=production
-cd /app && node_modules/.bin/next start &
+cd /app && node_modules/.bin/next start -p 3000 & # Force port to 3000 since on AWS App Runner the environmental variable PORT is set to 8080 which is used for oauth2-proxy
 pid1=$!
 
 # Start oauth2-proxy

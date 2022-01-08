@@ -21,20 +21,24 @@ Minimal containerized web application with database and authentication hosted on
 
 ## Initial AWS setup
 
-1. Create a ECR repository
+1. Make sure STS is enabled for `eu-west-1` (see <https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_temp_enable-regions.html#sts-regions-activate-deactivate>)
+
+2. Create a ECR repository
 
    ```sh
-   aws ecr create-repository --repository-name simonknittel/aws-service --image-scanning-configuration scanOnPush=true --region eu-west-1
+   aws --region eu-west-1 ecr create-repository --repository-name simonknittel/aws-service --image-scanning-configuration scanOnPush=true --region eu-west-1
    ```
 
    _Note: Must be in eu-west-1 since AWS App Runner only supports eu-west-1 at the moment._
 
-2. Create DynamoDB tables
+3. Build and push an initial container image
+
+4. Create DynamoDB tables
 
    ```sh
-   aws dynamodb create-table --table-name User --billing-mode PAY_PER_REQUEST --attribute-definitions AttributeName=Id,AttributeType=S --key-schema AttributeName=Id,KeyType=HASH
+   aws --region eu-west-1 dynamodb create-table --table-name User --billing-mode PAY_PER_REQUEST --attribute-definitions AttributeName=Id,AttributeType=S --key-schema AttributeName=Id,KeyType=HASH
 
-   aws dynamodb create-table \
+   aws --region eu-west-1 dynamodb create-table \
        --table-name IdentityProviderConnection \
        --billing-mode PAY_PER_REQUEST \
        --attribute-definitions AttributeName=Provider,AttributeType=S \
@@ -55,7 +59,7 @@ Minimal containerized web application with database and authentication hosted on
            }]"
    ```
 
-3. Create IAM policy called `aws-service`
+5. Create IAM policy called `aws-service`
 
    ```json
    {
@@ -82,7 +86,7 @@ Minimal containerized web application with database and authentication hosted on
    }
    ```
 
-4. Create user and attach permission policy
+6. Create user and attach permission policy
 
    ```txt
    User name: aws-service
@@ -90,28 +94,11 @@ Minimal containerized web application with database and authentication hosted on
    Policies: aws-service
    ```
 
-5. Build and push an initial container image
+7. Create an AWS App Runner auto scaling configuration and service
 
-6. Make sure STS is enabled for `eu-west-1` (see <https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_temp_enable-regions.html#sts-regions-activate-deactivate>)
-
-7. Create an AWS App Runner service via the AWS Management Console
-
-   ```txt
-   Repository type: Container registry
-   Provider: Amazon ECR
-   Container image URI: ...
-   Deployment trigger: Automatic
-   ECR access role: Create a new service role
-
-   Service name: aws-service
-   Virtual CPU & memory: 1 vCPU & 2 GB
-   Environmental variables: See .env
-   Port: 8080
-
-   Auto scaling configuration: Custom configuration
-   Concurrency: 100
-   Minimum size: 1 instance(s)
-   Maximum size: 1 instance(s)
+   ```sh
+   aws --region eu-west-1 apprunner create-auto-scaling-configuration --cli-input-json file://aws/create-auto-scaling-configuration.json
+   aws --region eu-west-1 apprunner create-service --cli-input-json file://aws/create-service.json
    ```
 
    _Note: Must be in eu-west-1 since AWS App Runner only supports eu-west-1 at the moment._
