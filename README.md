@@ -29,69 +29,29 @@ Minimal containerized web application with database and authentication hosted on
    aws --region eu-west-1 ecr create-repository --repository-name simonknittel/aws-service --image-scanning-configuration scanOnPush=true --region eu-west-1
    ```
 
-   _Note: Must be in eu-west-1 since AWS App Runner only supports eu-west-1 at the moment._
+   _Note: Must be in eu-west-1 since AWS App Runner only supports pulling images from eu-west-1 at the moment._
 
 3. Build and push an initial container image
 
 4. Create DynamoDB tables
 
    ```sh
-   aws --region eu-west-1 dynamodb create-table --table-name User --billing-mode PAY_PER_REQUEST --attribute-definitions AttributeName=Id,AttributeType=S --key-schema AttributeName=Id,KeyType=HASH
-
-   aws --region eu-west-1 dynamodb create-table \
-       --table-name IdentityProviderConnection \
-       --billing-mode PAY_PER_REQUEST \
-       --attribute-definitions AttributeName=Provider,AttributeType=S \
-                               AttributeName=ProviderId,AttributeType=S \
-                               AttributeName=UserId,AttributeType=S \
-       --key-schema AttributeName=Provider,KeyType=HASH \
-                    AttributeName=ProviderId,KeyType=RANGE \
-       --global-secondary-indexes \
-           "[{
-               \"IndexName\": \"UserIdIndex\",
-               \"KeySchema\": [{
-                   \"AttributeName\": \"UserId\",
-                   \"KeyType\": \"HASH\"
-               }],
-               \"Projection\": {
-                   \"ProjectionType\": \"ALL\"
-               }
-           }]"
+   aws --region eu-west-1 dynamodb create-table --cli-input-json file://aws/create-table-user.json
+   aws --region eu-west-1 dynamodb create-table --cli-input-json file://aws/create-table-identity-provider-connection.json
    ```
 
-5. Create IAM policy called `aws-service`
+5. Create IAM policy
 
-   ```json
-   {
-     "Version": "2012-10-17",
-     "Statement": [
-       {
-         "Sid": "VisualEditor0",
-         "Effect": "Allow",
-         "Action": [
-           "dynamodb:BatchGetItem",
-           "dynamodb:BatchWriteItem",
-           "dynamodb:PutItem",
-           "dynamodb:DeleteItem",
-           "dynamodb:GetItem",
-           "dynamodb:Scan",
-           "dynamodb:UpdateItem"
-         ],
-         "Resource": [
-           "arn:aws:dynamodb:eu-central-1:533499034851:table/User",
-           "arn:aws:dynamodb:eu-central-1:533499034851:table/IdentityProviderConnection"
-         ]
-       }
-     ]
-   }
+   ```sh
+   aws iam create-policy --policy-name aws-service --policy-document file://aws-service-policy.json
    ```
 
-6. Create user and attach permission policy
+6. Create user, access key and attach permission policy
 
-   ```txt
-   User name: aws-service
-   AWS credential type: Access key - Programmatic access
-   Policies: aws-service
+   ```sh
+   aws iam create-user --user-name aws-service
+   aws iam create-access-key --user-name aws-service
+   aws iam attach-user-policy --user-name aws-service --policy-arn arn:aws:iam::533499034851:policy/aws-service
    ```
 
 7. Create an AWS App Runner auto scaling configuration and service
@@ -105,22 +65,17 @@ Minimal containerized web application with database and authentication hosted on
 
 ## Build and push a container image / deploy a new image
 
-1. Authenticate your Docker installation with ECR
-
-   ```sh
-   aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin 533499034851.dkr.ecr.eu-west-1.amazonaws.com
-   ```
-
-2. Build and tag the container image
+1. Build and tag the container image
 
    ```sh
    docker build -t simonknittel/aws-service --build-arg AWS_ACCESS_KEY_ID= --build-arg AWS_SECRET_ACCESS_KEY= ./app
    docker tag simonknittel/aws-service:latest 533499034851.dkr.ecr.eu-west-1.amazonaws.com/simonknittel/aws-service:latest
    ```
 
-3. Push the container image
+2. Authenticate your Docker installation with ECR and push the image
 
    ```sh
+   aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin 533499034851.dkr.ecr.eu-west-1.amazonaws.com
    docker push 533499034851.dkr.ecr.eu-west-1.amazonaws.com/simonknittel/aws-service:latest
    ```
 
