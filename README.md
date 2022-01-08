@@ -43,6 +43,7 @@ Minimal containerized web application with database and authentication hosted on
 5. Create IAM policy
 
    ```sh
+   # Make sure to update all ARNs
    aws iam create-policy --policy-name aws-service --policy-document file://aws-service-policy.json
    ```
 
@@ -50,7 +51,11 @@ Minimal containerized web application with database and authentication hosted on
 
    ```sh
    aws iam create-user --user-name aws-service
+
+   # Note down the AccessKeyId and SecretAccessKey for use in step 7
    aws iam create-access-key --user-name aws-service
+
+   # Make sure to update the ARN
    aws iam attach-user-policy --user-name aws-service --policy-arn arn:aws:iam::533499034851:policy/aws-service
    ```
 
@@ -58,6 +63,8 @@ Minimal containerized web application with database and authentication hosted on
 
    ```sh
    aws --region eu-west-1 apprunner create-auto-scaling-configuration --cli-input-json file://aws/create-auto-scaling-configuration.json
+
+   # Make sure to update all ARNs, all environment variables and the image identifier
    aws --region eu-west-1 apprunner create-service --cli-input-json file://aws/create-service.json
    ```
 
