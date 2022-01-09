@@ -14,8 +14,8 @@
         "dynamodb:UpdateItem"
       ],
       "Resource": [
-        "arn:aws:dynamodb:eu-central-1:533499034851:table/User",
-        "arn:aws:dynamodb:eu-central-1:533499034851:table/IdentityProviderConnection"
+        "arn:aws:dynamodb:eu-west-1:xxxxxxxxxxxx:table/User",
+        "arn:aws:dynamodb:eu-west-1:xxxxxxxxxxxx:table/IdentityProviderConnection"
       ]
     }
   ]
