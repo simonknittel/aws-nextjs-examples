@@ -5,7 +5,7 @@
 # builder
 #
 
-FROM docker.io/library/node:16.13.0-alpine3.14 AS builder
+FROM docker.io/library/node:17.5.0-alpine3.14 AS builder
 
 ARG AWS_ACCESS_KEY_ID
 ARG AWS_SECRET_ACCESS_KEY
@@ -21,7 +21,7 @@ RUN apk add --no-cache libc6-compat && \
 # dependencies
 #
 
-FROM docker.io/library/node:16.13.0-alpine3.14 AS dependencies
+FROM docker.io/library/node:17.5.0-alpine3.14 AS dependencies
 
 WORKDIR /app
 ADD https://gobinaries.com/tj/node-prune /usr/local/bin/
@@ -35,7 +35,7 @@ RUN npm ci --only=production && \
 # runner
 #
 
-FROM docker.io/library/node:16.13.0-alpine3.14 AS runner
+FROM docker.io/library/node:17.5.0-alpine3.14 AS runner
 
 COPY entrypoint.sh ./entrypoint.sh
 RUN chmod +x ./entrypoint.sh
