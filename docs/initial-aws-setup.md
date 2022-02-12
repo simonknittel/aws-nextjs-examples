@@ -15,7 +15,7 @@ _Note: Must be in eu-west-1 since AWS App Runner only supports pulling images fr
 2. Create a ECR repository
 
    ```sh
-   aws --region eu-west-1 ecr create-repository --repository-name simonknittel/aws-service --image-scanning-configuration scanOnPush=true --region eu-west-1
+   aws --region eu-west-1 ecr create-repository --cli-input-json file://aws/create-repository.json
    ```
 
 3. Build and push an initial container image (see [docs/deploy-a-new-image.md](./deploy-a-new-image.md))
@@ -31,13 +31,13 @@ _Note: Must be in eu-west-1 since AWS App Runner only supports pulling images fr
 
    ```sh
    # Make sure to update all ARNs
-   aws iam create-policy --policy-name aws-service --policy-document file://aws-service-policy.json
+   aws iam create-policy --policy-name aws-service --policy-document file://aws-service-policy.json --tags Key=project,Value=nextjs-oauth2-proxy-aws-app-runner
    ```
 
 6. Create user, access key and attach permission policy
 
    ```sh
-   aws iam create-user --user-name aws-service
+   aws iam create-user --user-name aws-service --tags Key=project,Value=nextjs-oauth2-proxy-aws-app-runner
 
    # Note down the AccessKeyId and SecretAccessKey for use in step 7
    aws iam create-access-key --user-name aws-service
@@ -50,6 +50,7 @@ _Note: Must be in eu-west-1 since AWS App Runner only supports pulling images fr
 
    ```sh
    aws --region eu-west-1 apprunner create-auto-scaling-configuration --cli-input-json file://aws/create-auto-scaling-configuration.json
+   # arn:aws:apprunner:eu-west-1:533499034851:autoscalingconfiguration/Minimal/1/6d33ef7f43654767b69007b7a7b34326
 
    # Make sure to update all ARNs, all environment variables and the image identifier
    aws --region eu-west-1 apprunner create-service --cli-input-json file://aws/create-service.json

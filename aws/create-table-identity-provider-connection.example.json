@@ -38,5 +38,11 @@
         "ProjectionType": "ALL"
       }
     }
+  ],
+  "Tags": [
+    {
+      "Key": "project",
+      "value": "nextjs-oauth2-proxy-aws-app-runner"
+    }
   ]
 }

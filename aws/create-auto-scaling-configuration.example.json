@@ -2,5 +2,11 @@
   "AutoScalingConfigurationName": "Minimal",
   "MaxConcurrency": 100,
   "MaxSize": 1,
-  "MinSize": 1
+  "MinSize": 1,
+  "Tags": [
+    {
+      "Key": "project",
+      "value": "nextjs-oauth2-proxy-aws-app-runner"
+    }
+  ]
 }
