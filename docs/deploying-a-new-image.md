@@ -14,3 +14,7 @@ _Note: Make sure to have completed [docs/initial-setup.md](./initial-setup.md) f
    aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin xxxxxxxxxxxx.dkr.ecr.eu-west-1.amazonaws.com
    docker push xxxxxxxxxxxx.dkr.ecr.eu-west-1.amazonaws.com/example-repo:latest
    ```
+
+**OR**
+
+1. Run `deploy.sh`
