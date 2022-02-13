@@ -1,8 +1,24 @@
 resource "aws_ecr_repository" "primary" {
   name = "${var.name_prefx}-repo"
+  image_tag_mutability = "MUTABLE"
 
   image_scanning_configuration {
     scan_on_push = true
+  }
+
+  # Pull and push some dummy image to the repository so that the App Runner
+  # service can get successfully created
+
+  provisioner "local-exec" {
+    command = "docker build -t ${self.repository_url}:latest ./initial_image"
+  }
+
+  provisioner "local-exec" {
+    command = "aws ecr get-login-password --region ${var.aws_region} | docker login --username AWS --password-stdin ${self.registry_id}.dkr.ecr.${var.aws_region}.amazonaws.com"
+  }
+
+  provisioner "local-exec" {
+    command = "docker push ${self.repository_url}:latest"
   }
 }
 
@@ -115,8 +131,6 @@ resource "aws_iam_role" "access_role" {
   managed_policy_arns = [ data.aws_iam_policy.ecr_access.arn ]
 }
 
-# @TODO: Deploy initial image
-
 # There is some weird issue in which AWS reports that the access role has been
 # successfully created but using it right away results in an error saying that
 # this access role can't be assumed.
@@ -143,8 +157,6 @@ resource "aws_apprunner_service" "primary" {
         port = 8080
       }
     }
-
-    auto_deployments_enabled = true
 
     authentication_configuration {
       access_role_arn = aws_iam_role.access_role.arn

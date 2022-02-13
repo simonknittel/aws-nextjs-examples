@@ -5,8 +5,7 @@ _Note: Make sure to have completed [docs/initial-setup.md](./initial-setup.md) f
 1. Build and tag the container image
 
    ```sh
-   docker build -t example-repo --build-arg AWS_ACCESS_KEY_ID= --build-arg AWS_SECRET_ACCESS_KEY= ./app
-   docker tag example-repo:latest xxxxxxxxxxxx.dkr.ecr.eu-west-1.amazonaws.com/example-repo:latest
+   docker build -t xxxxxxxxxxxx.dkr.ecr.eu-west-1.amazonaws.com/example-repo:latest --build-arg AWS_ACCESS_KEY_ID= --build-arg AWS_SECRET_ACCESS_KEY= ./app
    ```
 
 2. Authenticate your Docker installation with ECR and push the image
