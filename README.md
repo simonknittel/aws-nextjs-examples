@@ -13,13 +13,13 @@ Minimal containerized web application with database and authentication hosted on
 - [oauth2-proxy](https://oauth2-proxy.github.io/oauth2-proxy/)
   - Authentication
 
-## Initial AWS setup
+## Initial setup
 
-See [docs/initial-aws-setup.md](./docs/initial-aws-setup.md)
+See [docs/initial-setup.md](./docs/initial-setup.md)
 
-## Deploy a new image
+## Deploying a new image
 
-See [docs/deploy-a-new-image.md](./docs/deploy-a-new-image.md)
+See [docs/deploying-a-new-image.md](./docs/deploying-a-new-image.md)
 
 ## Running the application locally for development
 

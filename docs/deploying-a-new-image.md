@@ -1,4 +1,4 @@
-# Deploy a new image
+# Deploying a new image
 
 _Note: Make sure to have completed [docs/initial-aws-setup.md](./initial-aws-setup.md) first._
 

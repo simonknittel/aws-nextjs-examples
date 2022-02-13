@@ -1,12 +1,14 @@
 {
   "cSpell.words": [
     "Buildx",
+    "hashicorp",
     "inet",
     "mkcert",
     "mkdir",
     "netsh",
     "nextjs",
     "nvmrc",
+    "tfvars",
     "uuidv4"
   ],
   "editor.codeActionsOnSave": {
