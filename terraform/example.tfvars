@@ -1,4 +1,4 @@
-name_prefx = ""
+name_prefx = "example"
 
 aws_region = "eu-west-1"
 aws_tags = {}

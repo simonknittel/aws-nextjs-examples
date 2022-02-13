@@ -1,6 +1,6 @@
 {
-  "name": "aws-service",
-  "private": true,
+  "name": "nextjs-oauth2-proxy-aws-app-runner",
+  "license": "MIT",
   "scripts": {
     "dev": "next dev",
     "build": "next build",

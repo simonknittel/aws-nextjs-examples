@@ -1,17 +1,8 @@
-# aws-service
+# nextjs-oauth2-proxy-aws-app-runner
 
-Minimal containerized web application with database and authentication hosted on AWS.
+This repository contains an [Next.js](https://nextjs.org/) application hosted on [AWS App Runner](https://aws.amazon.com/apprunner/). The container has [oauth2-proxy](https://github.com/oauth2-proxy/oauth2-proxy) as authentication layer in front of the Next.js application. This repo also contains Terraform config to deploy everything. For demonstration purposes the Next.js application takes the authenticated user's details and stores it in [Amazon DynamoDB](https://aws.amazon.com/dynamodb/) tables.
 
-## Services and tools used
-
-- [Next.js](https://nextjs.org/)
-  - Application
-- [AWS App Runner](https://aws.amazon.com/de/apprunner/)
-  - Application host
-- [Amazon DynamoDB](https://aws.amazon.com/de/dynamodb/)
-  - Database
-- [oauth2-proxy](https://oauth2-proxy.github.io/oauth2-proxy/)
-  - Authentication
+_Disclaimer: This code currently can't be used as is. Each individual part (Next.js application, Terraform config, etc.) isn't exactly anything finished or useful. It's mostly just a demonstration about how these things can be coupled and deployed._
 
 ## Initial setup
 
@@ -24,15 +15,3 @@ See [docs/deploying-a-new-image.md](./docs/deploying-a-new-image.md)
 ## Running the application locally for development
 
 See [docs/running-locally.md](./docs/running-locally.md)
-
-## Other links
-
-- DynamoDB
-  - <https://eu-central-1.console.aws.amazon.com/dynamodbv2/home?region=eu-central-1#tables>
-  - <https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/clients/client-dynamodb/index.html>
-  - <https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_Operations_Amazon_DynamoDB.html>
-  - <https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_Types_Amazon_DynamoDB.html>
-- MUI
-  - <https://mui.com/getting-started/usage/>
-  - <https://github.com/mui-org/material-ui/tree/master/examples/nextjs-with-typescript>
-  - <https://bareynol.github.io/mui-theme-creator/>

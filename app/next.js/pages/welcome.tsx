@@ -24,7 +24,7 @@ const Welcome: NextPage = ({}: InferGetServerSidePropsType<
   return (
     <>
       <Head>
-        <title>Welcome - aws-service</title>
+        <title>Welcome - nextjs-oauth2-proxy-aws-app-runner</title>
       </Head>
 
       <main>

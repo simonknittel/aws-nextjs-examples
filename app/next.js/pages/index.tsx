@@ -7,7 +7,7 @@ const Home: NextPage = () => {
   return (
     <>
       <Head>
-        <title>aws-service</title>
+        <title>nextjs-oauth2-proxy-aws-app-runner</title>
       </Head>
 
       <main>

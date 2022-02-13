@@ -1,5 +1,5 @@
 resource "aws_ecr_repository" "primary" {
-  name = "${var.name_prefx}-primary-repo"
+  name = "${var.name_prefx}-repo"
 
   image_scanning_configuration {
     scan_on_push = true
@@ -48,7 +48,7 @@ resource "aws_dynamodb_table" "identity_provider_connection" {
 }
 
 resource "aws_iam_policy" "primary" {
-  name = "${var.name_prefx}-primary-policy"
+  name = "${var.name_prefx}-policy"
 
   policy = jsonencode({
     Version: "2012-10-17",
@@ -75,7 +75,7 @@ resource "aws_iam_policy" "primary" {
 }
 
 resource "aws_iam_user" "primary" {
-  name = "${var.name_prefx}-primary-user"
+  name = "${var.name_prefx}-user"
 }
 
 resource "aws_iam_access_key" "primary" {
@@ -88,7 +88,7 @@ resource "aws_iam_user_policy_attachment" "primary" {
 }
 
 resource "aws_apprunner_auto_scaling_configuration_version" "primary" {
-  auto_scaling_configuration_name = "${var.name_prefx}-primary-asc"
+  auto_scaling_configuration_name = "${var.name_prefx}-asc"
   max_concurrency = 100
   max_size = 1
   min_size = 1
@@ -129,7 +129,7 @@ resource "time_sleep" "access_role" {
 resource "aws_apprunner_service" "primary" {
   depends_on = [ time_sleep.access_role ]
 
-  service_name = "${var.name_prefx}-primary-service"
+  service_name = "${var.name_prefx}-service"
 
   source_configuration {
     image_repository {

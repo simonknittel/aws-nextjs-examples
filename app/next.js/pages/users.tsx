@@ -200,7 +200,7 @@ const Home: NextPage = ({
   return (
     <>
       <Head>
-        <title>Users - aws-service</title>
+        <title>Users - nextjs-oauth2-proxy-aws-app-runner</title>
       </Head>
 
       <main>
