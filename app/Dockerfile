@@ -30,6 +30,11 @@ RUN npm ci --only=production && \
     chmod +x /usr/local/bin/node-prune && \
     node-prune
 
+# Download  extract oauth2-proxy
+ARG OAUTH2_PROXY_VERSION=7.2.1
+ADD https://github.com/oauth2-proxy/oauth2-proxy/releases/download/v$OAUTH2_PROXY_VERSION/oauth2-proxy-v$OAUTH2_PROXY_VERSION.linux-amd64.tar.gz /tmp/oauth2-proxy-v$OAUTH2_PROXY_VERSION.linux-amd64.tar.gz
+RUN tar -xf /tmp/oauth2-proxy-v$OAUTH2_PROXY_VERSION.linux-amd64.tar.gz -C /tmp
+
 
 #
 # runner
@@ -40,12 +45,9 @@ FROM docker.io/library/node:16.13.0-alpine3.14 AS runner
 COPY entrypoint.sh ./entrypoint.sh
 RUN chmod +x ./entrypoint.sh
 
-
-# Download, extract and install oauth2-proxy
-ARG OAUTH2_PROXY_VERSION=7.2.0
-ADD https://github.com/oauth2-proxy/oauth2-proxy/releases/download/v$OAUTH2_PROXY_VERSION/oauth2-proxy-v$OAUTH2_PROXY_VERSION.linux-amd64.tar.gz /tmp/oauth2-proxy-v$OAUTH2_PROXY_VERSION.linux-amd64.tar.gz
-RUN tar -xf /tmp/oauth2-proxy-v$OAUTH2_PROXY_VERSION.linux-amd64.tar.gz -C /tmp && \
-    cp /tmp/oauth2-proxy-v$OAUTH2_PROXY_VERSION.linux-amd64/oauth2-proxy /usr/local/bin
+# Move oauth2-proxy from dependencies step to runner and install config
+ARG OAUTH2_PROXY_VERSION=7.2.1
+COPY --from=dependencies /tmp/oauth2-proxy-v$OAUTH2_PROXY_VERSION.linux-amd64/oauth2-proxy /usr/local/bin
 COPY oauth2-proxy.cfg /etc/oauth2-proxy.cfg
 
 # Environmental variables for oauth2-proxy
@@ -63,7 +65,6 @@ COPY --chown=node:node --from=builder /app/package.json /app/package.json
 ENV AWS_ACCESS_KEY_ID=
 ENV AWS_SECRET_ACCESS_KEY=
 ENV CSRF_SECRET=
-
 
 USER node
 
