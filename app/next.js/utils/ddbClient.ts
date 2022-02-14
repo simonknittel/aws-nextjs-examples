@@ -9,6 +9,8 @@ if (!process.env.AWS_SECRET_ACCESS_KEY) {
   process.exit(1);
 }
 
-const config: DynamoDBClientConfig = { region: "eu-central-1" };
+const config: DynamoDBClientConfig = {
+  region: process.env.DYNAMODB_REGION,
+};
 
 export const ddbClient = new DynamoDBClient(config);

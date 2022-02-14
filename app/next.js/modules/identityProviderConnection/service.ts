@@ -18,7 +18,7 @@ import {
 class IdentityProviderConnectionService
   implements IdentityProviderConnectionServiceInterface
 {
-  private TABLE_NAME = "IdentityProviderConnection";
+  private TABLE_NAME = process.env.DYNAMODB_IDENTITYPROVIDERCONNECTION_TABLE!;
 
   private ATTRIBUTES = [
     "UserId", // S

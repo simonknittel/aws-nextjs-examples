@@ -20,7 +20,7 @@ import {
 } from "./types";
 
 class UserService implements UserServiceInterface {
-  private TABLE_NAME = "User";
+  private TABLE_NAME = process.env.DYNAMODB_USER_TABLE!;
 
   private ATTRIBUTES = [
     "Id", // S
