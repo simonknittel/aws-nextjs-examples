@@ -22,6 +22,30 @@ resource "aws_ecr_repository" "primary" {
   }
 }
 
+resource "aws_ecr_lifecycle_policy" "primary" {
+  repository = aws_ecr_repository.primary.name
+
+  policy = <<EOF
+{
+  "rules": [
+    {
+      "rulePriority": 1,
+      "description": "Expire untagged images older than 2 days",
+      "selection": {
+        "tagStatus": "untagged",
+        "countType": "sinceImagePushed",
+        "countUnit": "days",
+        "countNumber": 2
+      },
+      "action": {
+        "type": "expire"
+      }
+    }
+  ]
+}
+EOF
+}
+
 resource "aws_dynamodb_table" "user" {
   name = "${var.name_prefx}-User"
   billing_mode = "PAY_PER_REQUEST"
