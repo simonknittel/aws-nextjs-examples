@@ -153,9 +153,8 @@ resource "aws_apprunner_service" "primary" {
         runtime_environment_variables = merge({
           AWS_ACCESS_KEY_ID = aws_iam_access_key.primary.id,
           AWS_SECRET_ACCESS_KEY = aws_iam_access_key.primary.secret,
-          DYNAMODB_REGION = var.aws_region
-          DYNAMODB_USER_TABLE = aws_dynamodb_table.user.name
-          DYNAMODB_IDENTITYPROVIDERCONNECTION_TABLE = aws_dynamodb_table.identity_provider_connection.name
+          AWS_REGION = var.aws_region,
+          AWS_NAME_PREFIX = var.name_prefx,
         }, var.aws_image_environment_variables)
         port = 8080
       }

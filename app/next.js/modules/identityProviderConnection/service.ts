@@ -18,7 +18,7 @@ import {
 class IdentityProviderConnectionService
   implements IdentityProviderConnectionServiceInterface
 {
-  private TABLE_NAME = process.env.DYNAMODB_IDENTITYPROVIDERCONNECTION_TABLE!;
+  private TABLE_NAME = `${process.env.AWS_NAME_PREFIX}-IdentityProviderConnection`;
 
   private ATTRIBUTES = [
     "UserId", // S

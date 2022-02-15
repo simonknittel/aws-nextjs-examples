@@ -23,17 +23,17 @@ RUN apk add --no-cache libc6-compat && \
 
 FROM docker.io/library/node:16.13.0-alpine3.14 AS dependencies
 
+# Download  extract oauth2-proxy
+ARG OAUTH2_PROXY_VERSION=7.2.1
+ADD https://github.com/oauth2-proxy/oauth2-proxy/releases/download/v$OAUTH2_PROXY_VERSION/oauth2-proxy-v$OAUTH2_PROXY_VERSION.linux-amd64.tar.gz /tmp/oauth2-proxy-v$OAUTH2_PROXY_VERSION.linux-amd64.tar.gz
+RUN tar -xf /tmp/oauth2-proxy-v$OAUTH2_PROXY_VERSION.linux-amd64.tar.gz -C /tmp
+
 WORKDIR /app
 ADD https://gobinaries.com/tj/node-prune /usr/local/bin/
 COPY next.js/package.json next.js/package-lock.json ./
 RUN npm ci --only=production && \
     chmod +x /usr/local/bin/node-prune && \
     node-prune
-
-# Download  extract oauth2-proxy
-ARG OAUTH2_PROXY_VERSION=7.2.1
-ADD https://github.com/oauth2-proxy/oauth2-proxy/releases/download/v$OAUTH2_PROXY_VERSION/oauth2-proxy-v$OAUTH2_PROXY_VERSION.linux-amd64.tar.gz /tmp/oauth2-proxy-v$OAUTH2_PROXY_VERSION.linux-amd64.tar.gz
-RUN tar -xf /tmp/oauth2-proxy-v$OAUTH2_PROXY_VERSION.linux-amd64.tar.gz -C /tmp
 
 
 #

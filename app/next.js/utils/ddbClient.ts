@@ -10,7 +10,7 @@ if (!process.env.AWS_SECRET_ACCESS_KEY) {
 }
 
 const config: DynamoDBClientConfig = {
-  region: process.env.DYNAMODB_REGION,
+  region: process.env.AWS_REGION,
 };
 
 export const ddbClient = new DynamoDBClient(config);

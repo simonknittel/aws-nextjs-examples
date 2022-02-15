@@ -20,7 +20,7 @@ import {
 } from "./types";
 
 class UserService implements UserServiceInterface {
-  private TABLE_NAME = process.env.DYNAMODB_USER_TABLE!;
+  private TABLE_NAME = `${process.env.AWS_NAME_PREFIX}-User`;
 
   private ATTRIBUTES = [
     "Id", // S
