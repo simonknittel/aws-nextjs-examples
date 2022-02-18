@@ -1,0 +1,11 @@
+aws/*
+!aws/*.example.*
+https_proxy/certs/
+.terraform/
+.terraform.lock.hcl
+*.hcl
+!example.hcl
+*.tfvars
+!example.tfvars
+.dccache
+.env

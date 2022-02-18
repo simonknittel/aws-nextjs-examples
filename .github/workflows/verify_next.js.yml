@@ -6,13 +6,13 @@ on:
       - master
     paths:
       - ".github/workflows/verify_next.js.yml"
-      - "app/next.js/**"
-      - ".nvmrc"
+      - "app-runner-oauth2-proxy-dynamodb/app/next.js/**"
+      - "app-runner-oauth2-proxy-dynamodb/.nvmrc"
   pull_request:
     paths:
       - ".github/workflows/verify_next.js.yml"
-      - "app/next.js/**"
-      - ".nvmrc"
+      - "app-runner-oauth2-proxy-dynamodb/app/next.js/**"
+      - "app-runner-oauth2-proxy-dynamodb/.nvmrc"
 
 jobs:
   verify:
@@ -25,13 +25,13 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v2.5.1
         with:
-          node-version-file: ".nvmrc"
+          node-version-file: "./app-runner-oauth2-proxy-dynamodb/.nvmrc"
 
       - name: Cache
         id: cache
         uses: actions/cache@v2.1.7
         with:
-          path: ./app/next.js/node_modules
+          path: ./app-runner-oauth2-proxy-dynamodb/app/next.js/node_modules
           key: node-${{ secrets.CACHE_VERSION }}-${{ hashFiles('app/next.js/package-lock.json', '.nvmrc') }}
           # See https://github.com/actions/cache/issues/2#issuecomment-673493515
           # about why we are using CACHE_VERSION. When updating the CACHE_VERSION
@@ -39,7 +39,7 @@ jobs:
 
       - run: npm ci
         if: steps.cache.outputs.cache-hit != 'true'
-        working-directory: ./app/next.js
+        working-directory: ./app-runner-oauth2-proxy-dynamodb/app/next.js
 
       # @TODO: Parallelize Lint and Build
       - name: Lint
@@ -47,7 +47,7 @@ jobs:
           CI: true
           NODE_ENV: development
         run: npm run lint
-        working-directory: ./app/next.js
+        working-directory: ./app-runner-oauth2-proxy-dynamodb/app/next.js
 
       # @TODO: Parallelize Lint and Build
       - name: Build
@@ -58,4 +58,4 @@ jobs:
           AWS_SECRET_ACCESS_KEY: dummy
           NEXT_TELEMETRY_DISABLED: 1
         run: npm run build
-        working-directory: ./app/next.js
+        working-directory: ./app-runner-oauth2-proxy-dynamodb/app/next.js

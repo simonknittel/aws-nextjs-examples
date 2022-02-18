@@ -4,7 +4,10 @@ on:
   push:
     branches:
       - master
+      - "app-runner-oauth2-proxy-dynamodb/**"
   pull_request:
+    paths:
+      - "app-runner-oauth2-proxy-dynamodb/**"
 
 jobs:
   verify:
@@ -17,6 +20,6 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v2.5.1
         with:
-          node-version-file: ".nvmrc"
+          node-version-file: "./app-runner-oauth2-proxy-dynamodb/.nvmrc"
 
       - run: npx prettier --check .

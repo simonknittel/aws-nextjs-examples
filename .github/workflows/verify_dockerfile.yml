@@ -6,13 +6,13 @@ on:
       - master
     paths:
       - ".github/workflows/verify_dockerfile.yml"
-      - "app/.dockerignore"
-      - "app/Dockerfile"
+      - "app-runner-oauth2-proxy-dynamodb/app/.dockerignore"
+      - "app-runner-oauth2-proxy-dynamodb/app/Dockerfile"
   pull_request:
     paths:
       - ".github/workflows/verify_dockerfile.yml"
-      - "app/.dockerignore"
-      - "app/Dockerfile"
+      - "app-runner-oauth2-proxy-dynamodb/app/.dockerignore"
+      - "app-runner-oauth2-proxy-dynamodb/app/Dockerfile"
 
 jobs:
   verify:
@@ -33,3 +33,4 @@ jobs:
           AWS_ACCESS_KEY_ID: dummy
           AWS_SECRET_ACCESS_KEY: dummy
         run: docker build --build-arg AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID --build-arg AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY ./app
+        working-directory: ./app-runner-oauth2-proxy-dynamodb
