@@ -10,11 +10,20 @@ FROM docker.io/library/node:16.13.0-alpine3.14 AS builder
 ARG AWS_ACCESS_KEY_ID
 ARG AWS_SECRET_ACCESS_KEY
 
+# Build app
 WORKDIR /app
 COPY next.js .
 RUN apk add --no-cache libc6-compat && \
     npm ci && \
     NEXT_TELEMETRY_DISABLED=1 npm run build
+
+# Prepare app for runner step
+WORKDIR /output
+RUN cp /app/next.config.js ./ && \
+    cp /app/package.json ./ && \
+    cp -a /app/.next/standalone/. ./ && \
+    cp -a /app/.next/static .next && \
+    rm -f .env
 
 
 #
@@ -27,13 +36,6 @@ FROM docker.io/library/node:16.13.0-alpine3.14 AS dependencies
 ARG OAUTH2_PROXY_VERSION=7.2.1
 ADD https://github.com/oauth2-proxy/oauth2-proxy/releases/download/v$OAUTH2_PROXY_VERSION/oauth2-proxy-v$OAUTH2_PROXY_VERSION.linux-amd64.tar.gz /tmp/oauth2-proxy-v$OAUTH2_PROXY_VERSION.linux-amd64.tar.gz
 RUN tar -xf /tmp/oauth2-proxy-v$OAUTH2_PROXY_VERSION.linux-amd64.tar.gz -C /tmp
-
-WORKDIR /app
-ADD https://gobinaries.com/tj/node-prune /usr/local/bin/
-COPY next.js/package.json next.js/package-lock.json ./
-RUN npm ci --only=production && \
-    chmod +x /usr/local/bin/node-prune && \
-    node-prune
 
 
 #
@@ -56,10 +58,7 @@ ENV OAUTH2_PROXY_CLIENT_SECRET=
 ENV OAUTH2_PROXY_COOKIE_SECRET=
 
 # Move built Next.js from builder step to runner
-COPY --chown=node:node --from=builder /app/next.config.js ./
-COPY --chown=node:node --from=builder /app/.next /app/.next
-COPY --chown=node:node --from=dependencies /app/node_modules /app/node_modules
-COPY --chown=node:node --from=builder /app/package.json /app/package.json
+COPY --chown=node:node --from=builder /output /app
 
 # Environmental variables for Next.js
 ENV AWS_ACCESS_KEY_ID=

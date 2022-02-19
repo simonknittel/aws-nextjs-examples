@@ -3,4 +3,8 @@ module.exports = {
   reactStrictMode: true,
 
   poweredByHeader: false,
+
+  experimental: {
+    outputStandalone: true
+  }
 };

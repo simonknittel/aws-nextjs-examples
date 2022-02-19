@@ -200,7 +200,7 @@ const Home: NextPage = ({
   return (
     <>
       <Head>
-        <title>Users - nextjs-oauth2-proxy-aws-app-runner</title>
+        <title>Users - app-runner-oauth2-proxy-dynamodb</title>
       </Head>
 
       <main>

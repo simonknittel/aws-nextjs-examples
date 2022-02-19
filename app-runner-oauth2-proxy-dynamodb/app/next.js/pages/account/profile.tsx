@@ -60,7 +60,7 @@ const Profile: NextPage = ({
   return (
     <>
       <Head>
-        <title>Profile - nextjs-oauth2-proxy-aws-app-runner</title>
+        <title>Profile - app-runner-oauth2-proxy-dynamodb</title>
       </Head>
 
       <main>

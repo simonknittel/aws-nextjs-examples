@@ -7,7 +7,7 @@ const Home: NextPage = () => {
   return (
     <>
       <Head>
-        <title>nextjs-oauth2-proxy-aws-app-runner</title>
+        <title>app-runner-oauth2-proxy-dynamodb</title>
       </Head>
 
       <main>
