@@ -5,6 +5,6 @@ module.exports = {
   poweredByHeader: false,
 
   experimental: {
-    outputStandalone: true
-  }
+    outputStandalone: true,
+  },
 };
