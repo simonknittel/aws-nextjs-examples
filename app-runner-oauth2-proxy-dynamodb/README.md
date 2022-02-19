@@ -15,3 +15,7 @@ See [docs/deploying-a-new-image.md](./docs/deploying-a-new-image.md)
 ## Running the application locally for development
 
 See [docs/running-locally.md](./docs/running-locally.md)
+
+## Overview
+
+![](./docs/assets/architecture.png)
