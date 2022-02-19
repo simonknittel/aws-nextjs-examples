@@ -201,3 +201,36 @@ resource "aws_apprunner_service" "primary" {
     protocol = "HTTP"
   }
 }
+
+resource "aws_apprunner_custom_domain_association" "primary" {
+  domain_name = "${var.cloudflare_cname}.${var.cloudflare_zone_name}"
+  service_arn = aws_apprunner_service.primary.arn
+}
+
+data "cloudflare_zones" "primary" {
+  filter {
+    name = var.cloudflare_zone_name
+    lookup_type = "exact"
+  }
+}
+
+resource "cloudflare_record" "primary" {
+  depends_on = [ aws_apprunner_custom_domain_association.primary ]
+
+  zone_id = data.cloudflare_zones.primary.zones[0].id
+  name = var.cloudflare_cname
+  value = aws_apprunner_service.primary.service_url
+  type = "CNAME"
+  proxied = false
+}
+
+resource "cloudflare_record" "certificate_validation" {
+  zone_id = data.cloudflare_zones.primary.zones[0].id
+  proxied = false
+
+  for_each = { for record in aws_apprunner_custom_domain_association.primary.certificate_validation_records: record.name => record }
+
+  name = each.value.name
+  value = each.value.value
+  type = each.value.type
+}

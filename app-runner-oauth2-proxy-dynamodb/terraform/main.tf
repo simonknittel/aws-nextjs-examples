@@ -13,6 +13,11 @@ terraform {
       source = "hashicorp/time"
       version = "0.7.2"
     }
+
+    cloudflare = {
+      source = "cloudflare/cloudflare"
+      version = "3.9.1"
+    }
   }
 }
 
@@ -22,4 +27,8 @@ provider "aws" {
   default_tags {
     tags = var.aws_tags
   }
+}
+
+provider "cloudflare" {
+  api_token = var.cloudflare_api_token
 }

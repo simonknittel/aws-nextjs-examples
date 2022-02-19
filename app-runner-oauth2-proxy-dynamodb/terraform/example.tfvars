@@ -8,3 +8,7 @@ aws_image_environment_variables = {
   OAUTH2_PROXY_COOKIE_SECRET = "",
   CSRF_SECRET = ""
 }
+
+cloudflare_api_token = ""
+cloudflare_zone_name = ""
+cloudflare_cname = "aws-nextjs-examples"
