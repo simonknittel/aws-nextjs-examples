@@ -1,5 +1,6 @@
 name_prefx = "example"
 
+aws_profile = "default"
 aws_region = "eu-west-1"
 aws_tags = {}
 aws_image_environment_variables = {

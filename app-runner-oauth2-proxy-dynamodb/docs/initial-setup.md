@@ -14,7 +14,7 @@ _Note: Must be in eu-west-1 since AWS App Runner only supports pulling images fr
 1. Create a S3 bucket as Terraform Backend
 
    ```sh
-   aws --region eu-west-1 s3api create-bucket --bucket example-terraform-backend --create-bucket-configuration LocationConstraint=eu-west-1 --object-ownership BucketOwnerEnforced
+   aws --profile default --region eu-west-1 s3api create-bucket --bucket example-terraform-backend --create-bucket-configuration LocationConstraint=eu-west-1 --object-ownership BucketOwnerEnforced
    ```
 
 2. Use `example.hcl` and `example.tfvars` to configure your infrastructure

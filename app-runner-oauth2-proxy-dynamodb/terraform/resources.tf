@@ -14,7 +14,7 @@ resource "aws_ecr_repository" "primary" {
   }
 
   provisioner "local-exec" {
-    command = "aws ecr get-login-password --region ${var.aws_region} | docker login --username AWS --password-stdin ${self.registry_id}.dkr.ecr.${var.aws_region}.amazonaws.com"
+    command = "aws --profile ${var.aws_profile} ecr get-login-password --region ${var.aws_region} | docker login --username AWS --password-stdin ${self.registry_id}.dkr.ecr.${var.aws_region}.amazonaws.com"
   }
 
   provisioner "local-exec" {

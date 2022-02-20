@@ -11,10 +11,10 @@ _Note: Make sure to have completed [docs/initial-setup.md](./initial-setup.md) f
 2. Authenticate your Docker installation with ECR and push the image
 
    ```sh
-   aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin xxxxxxxxxxxx.dkr.ecr.eu-west-1.amazonaws.com
+   aws --profile default ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin xxxxxxxxxxxx.dkr.ecr.eu-west-1.amazonaws.com
    docker push xxxxxxxxxxxx.dkr.ecr.eu-west-1.amazonaws.com/example-repo:latest
    ```
 
 **OR**
 
-1. Run `deploy.sh`
+1. Run `./deploy.sh default`
