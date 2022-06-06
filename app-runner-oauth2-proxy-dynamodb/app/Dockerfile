@@ -5,7 +5,7 @@
 # builder
 #
 
-FROM docker.io/library/node:16.14.2-alpine3.14 AS builder
+FROM docker.io/library/node:18.3.0-alpine3.14 AS builder
 
 ARG AWS_ACCESS_KEY_ID
 ARG AWS_SECRET_ACCESS_KEY
@@ -30,7 +30,7 @@ RUN cp /app/next.config.js ./ && \
 # dependencies
 #
 
-FROM docker.io/library/node:16.14.2-alpine3.14 AS dependencies
+FROM docker.io/library/node:18.3.0-alpine3.14 AS dependencies
 
 # Download  extract oauth2-proxy
 ARG OAUTH2_PROXY_VERSION=7.2.1
@@ -42,7 +42,7 @@ RUN tar -xf /tmp/oauth2-proxy-v$OAUTH2_PROXY_VERSION.linux-amd64.tar.gz -C /tmp
 # runner
 #
 
-FROM docker.io/library/node:16.14.2-alpine3.14 AS runner
+FROM docker.io/library/node:18.3.0-alpine3.14 AS runner
 
 COPY entrypoint.sh ./entrypoint.sh
 RUN chmod +x ./entrypoint.sh
