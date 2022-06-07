@@ -29,7 +29,7 @@ jobs:
 
       - name: Cache
         id: cache
-        uses: actions/cache@v2.1.7
+        uses: actions/cache@v3.0.4
         with:
           path: ./app-runner-oauth2-proxy-dynamodb/app/next.js/node_modules
           key: node-${{ secrets.CACHE_VERSION }}-${{ hashFiles('app/next.js/package-lock.json', '.nvmrc') }}
